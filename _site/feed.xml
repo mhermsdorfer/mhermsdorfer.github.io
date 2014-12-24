@@ -5,8 +5,8 @@
     <description>Hi, I&#39;m Mark Hermsdorfer, a operations architect with a focus on networking and application delivery infrastructure.  I write about various topics including my time as an F5 Networks consultant.</description>
     <link>http://mhermsdorfer.github.io/</link>
     <atom:link href="http://mhermsdorfer.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 23 Dec 2014 22:43:50 -0500</pubDate>
-    <lastBuildDate>Tue, 23 Dec 2014 22:43:50 -0500</lastBuildDate>
+    <pubDate>Tue, 23 Dec 2014 22:53:48 -0500</pubDate>
+    <lastBuildDate>Tue, 23 Dec 2014 22:53:48 -0500</lastBuildDate>
     <generator>Jekyll v2.2.0</generator>
     
       <item>
@@ -21,7 +21,7 @@
 
 &lt;p&gt;The configuration below does not work as one might expect.  &lt;/p&gt;
 
-&lt;p&gt;One might expect the GTM to issue the following health monitors:&lt;/p&gt;
+&lt;p&gt;One likely expects the GTM to issue the following health monitors:&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -70,7 +70,7 @@
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;This often leaves the public or external virtual server object marked down as many organizations do not configure their firewalls for hairpin NAT.&lt;/p&gt;
+&lt;p&gt;This often leaves the public or external virtual server object marked down as many organizations do not configure their firewalls for &lt;a href=&quot;http://tools.ietf.org/html/rfc4787#section-6&quot;&gt;Hairpin nat&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;working-configuration&quot;&gt;Working Configuration&lt;/h2&gt;
 
@@ -136,9 +136,10 @@ gtm server /Common/GenericServer01 {
 
 &lt;p&gt;If however, hairpin nat is not an option for you, continue on.  &lt;a href=&quot;https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html&quot;&gt;F5’s Achieving split DNS behavior through BIG-IP GTM wide IPs&lt;/a&gt; walks you though the steps to configure split dns on GTM.  However it lacks configuration examples, this post is intended to clarify configurations where needed and to provide some example configuration snippets.&lt;/p&gt;
 
-&lt;h2 id=&quot;work-in-progress&quot;&gt;work in progress….&lt;/h2&gt;
+&lt;h1 id=&quot;sorry-work-in-progress&quot;&gt;Sorry work in progress…&lt;/h1&gt;
 
 &lt;h1 id=&quot;using-translation-fields-in-virtual-server-objects&quot;&gt;Using Translation fields in virtual server objects&lt;/h1&gt;
+
 &lt;p&gt;&lt;a href=&quot;https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html&quot;&gt;F5’s Configuring BIG-IP GTM server objects for BIG-IP devices that reside behind a firewall NAT&lt;/a&gt; covers this fairly well.&lt;/p&gt;
 
 &lt;h1 id=&quot;pool-creation&quot;&gt;Pool Creation&lt;/h1&gt;

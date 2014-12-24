@@ -12,9 +12,10 @@ I strongly advocate that administrators simply hand out external public IP addre
 
 If however, hairpin nat is not an option for you, continue on.  [F5's Achieving split DNS behavior through BIG-IP GTM wide IPs](https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html) walks you though the steps to configure split dns on GTM.  However it lacks configuration examples, this post is intended to clarify configurations where needed and to provide some example configuration snippets.
 
-## work in progress.... 
+# Sorry work in progress...
 
 # Using Translation fields in virtual server objects
+
 [F5's Configuring BIG-IP GTM server objects for BIG-IP devices that reside behind a firewall NAT](https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html) covers this fairly well.
 
 # Pool Creation

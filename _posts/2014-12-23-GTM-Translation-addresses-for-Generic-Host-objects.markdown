@@ -15,7 +15,7 @@ For an overview of split DNS configuration on the GTM see: [Spit DNS with GTM]({
 
 The configuration below does not work as one might expect.  
 
-One might expect the GTM to issue the following health monitors:
+One likely expects the GTM to issue the following health monitors:
 
 * gateway\_icmp to 172.20.1.31 the server object address.
 
@@ -54,7 +54,7 @@ However what actually happens is as follows:
 
 * tcp\_half\_open to 192.0.2.31:80 for the "GenericServer01-external" virtual server object, because translation addresses are ignored for non-iquery or bigip monitored objects.
 
-This often leaves the public or external virtual server object marked down as many organizations do not configure their firewalls for hairpin NAT.
+This often leaves the public or external virtual server object marked down as many organizations do not configure their firewalls for [Hairpin nat](http://tools.ietf.org/html/rfc4787#section-6).
 
 
 ## Working Configuration

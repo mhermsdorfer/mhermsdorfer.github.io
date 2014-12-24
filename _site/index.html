@@ -72,7 +72,7 @@ GTM Translation addresses for Generic Host objects
 
 <p>The configuration below does not work as one might expect.  </p>
 
-<p>One might expect the GTM to issue the following health monitors:</p>
+<p>One likely expects the GTM to issue the following health monitors:</p>
 
 <ul>
   <li>
@@ -121,7 +121,7 @@ GTM Translation addresses for Generic Host objects
   </li>
 </ul>
 
-<p>This often leaves the public or external virtual server object marked down as many organizations do not configure their firewalls for hairpin NAT.</p>
+<p>This often leaves the public or external virtual server object marked down as many organizations do not configure their firewalls for <a href="http://tools.ietf.org/html/rfc4787#section-6">Hairpin nat</a>.</p>
 
 <h2 id="working-configuration">Working Configuration</h2>
 
@@ -183,9 +183,10 @@ Split DNS with GTM
 
 <p>If however, hairpin nat is not an option for you, continue on.  <a href="https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html">F5’s Achieving split DNS behavior through BIG-IP GTM wide IPs</a> walks you though the steps to configure split dns on GTM.  However it lacks configuration examples, this post is intended to clarify configurations where needed and to provide some example configuration snippets.</p>
 
-<h2 id="work-in-progress">work in progress….</h2>
+<h1 id="sorry-work-in-progress">Sorry work in progress…</h1>
 
 <h1 id="using-translation-fields-in-virtual-server-objects">Using Translation fields in virtual server objects</h1>
+
 <p><a href="https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html">F5’s Configuring BIG-IP GTM server objects for BIG-IP devices that reside behind a firewall NAT</a> covers this fairly well.</p>
 
 <h1 id="pool-creation">Pool Creation</h1>
