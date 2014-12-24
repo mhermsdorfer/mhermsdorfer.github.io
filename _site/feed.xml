@@ -5,8 +5,8 @@
     <description>Hi, I&#39;m Mark Hermsdorfer, a operations architect with a focus on networking and application delivery infrastructure.  I write about various topics including my time as an F5 Networks consultant.</description>
     <link>http://mhermsdorfer.github.io/</link>
     <atom:link href="http://mhermsdorfer.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 23 Dec 2014 22:27:13 -0500</pubDate>
-    <lastBuildDate>Tue, 23 Dec 2014 22:27:13 -0500</lastBuildDate>
+    <pubDate>Tue, 23 Dec 2014 22:43:50 -0500</pubDate>
+    <lastBuildDate>Tue, 23 Dec 2014 22:43:50 -0500</lastBuildDate>
     <generator>Jekyll v2.2.0</generator>
     
       <item>
@@ -76,7 +76,7 @@
 
 &lt;p&gt;First, a few considerations, I’d argue the best possible fix is to setup public IP addresses on your LTMs and let them act as your primary edge device.  This puts all the management and configuration for your public presence on a highly secure, highly scalable, best of breed system.&lt;/p&gt;
 
-&lt;p&gt;I’d argue the best possible fix is to setup or enable hairpin NAT on the firewall or router performing the external NAT.  In an ideal world the F5 would monitor via the public IP address so that if the device performing NAT goes down the F5 correctly marks the system as down.&lt;/p&gt;
+&lt;p&gt;Failing using F5 LTM for all external IPs the next best fix is to setup or enable hairpin NAT on the firewall or router performing the external NAT.  In an ideal world the F5 would monitor via the public IP address so that if the device performing NAT goes down the F5 correctly marks the system as down.&lt;/p&gt;
 
 &lt;p&gt;If all that is not possible and you must monitor the private address while handing out the public address then continue reading.  The way to configure a generic host server/virtual server object for NAT translation is to use alias addresses a health monitor assigned to the public virtual server object.  This should sound familiar from LTM, an alias address on a health monitor allows us to apply that health check to any arbitrary virtual server or server object in the GTM, while actually having the health check go to a different address/port.&lt;/p&gt;
 

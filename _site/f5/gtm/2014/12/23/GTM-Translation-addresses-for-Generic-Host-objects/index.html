@@ -126,7 +126,7 @@
 
 <p>First, a few considerations, I’d argue the best possible fix is to setup public IP addresses on your LTMs and let them act as your primary edge device.  This puts all the management and configuration for your public presence on a highly secure, highly scalable, best of breed system.</p>
 
-<p>I’d argue the best possible fix is to setup or enable hairpin NAT on the firewall or router performing the external NAT.  In an ideal world the F5 would monitor via the public IP address so that if the device performing NAT goes down the F5 correctly marks the system as down.</p>
+<p>Failing using F5 LTM for all external IPs the next best fix is to setup or enable hairpin NAT on the firewall or router performing the external NAT.  In an ideal world the F5 would monitor via the public IP address so that if the device performing NAT goes down the F5 correctly marks the system as down.</p>
 
 <p>If all that is not possible and you must monitor the private address while handing out the public address then continue reading.  The way to configure a generic host server/virtual server object for NAT translation is to use alias addresses a health monitor assigned to the public virtual server object.  This should sound familiar from LTM, an alias address on a health monitor allows us to apply that health check to any arbitrary virtual server or server object in the GTM, while actually having the health check go to a different address/port.</p>
 
