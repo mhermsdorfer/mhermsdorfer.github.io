@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Mark Hermsdorfer</title>
+    <title>Home</title>
     <meta name="viewport" content="width=device-width">
     <meta name="description" content="Hi, I'm Mark Hermsdorfer, a operations architect with a focus on networking and application delivery infrastructure.  I write about various topics including my time as an F5 Networks consultant.">
     <link rel="canonical" href="http://mhermsdorfer.github.io/">
@@ -41,7 +41,7 @@
         
           
         
-          
+          <a class="page-link" href="/">Home</a>
         
       </div>
     </nav>
@@ -53,25 +53,157 @@
 
     <div class="page-content">
       <div class="wrap">
-      <div class="home">
+      <div class="posts">
 
-  <h1>Posts</h1>
+<div class="post">
+<h1 class="post-title">
+<a href="/f5/gtm/2014/12/23/GTM-Translation-addresses-for-Generic-Host-objects/">
+GTM Translation addresses for Generic Host objects
+</a>
+</h1>
+<span class="post-date">23 Dec 2014</span>
+<p>A reading of the <a href="https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html">F5’s Configuring BIG-IP GTM server objects for BIG-IP devices that reside behind a firewall NAT</a> might lead one to believe that translation addresses for non BIG-IP server objects would have a similar effect as they do for BIG-IP objects.  However, translation addresses are ONLY supported by BIG-IP objects when using iQuery or the “bigip” health monitor in GTM.  The translation-address and translation-port configuration options have no impact on generic host or any other non-iquery monitored server or virtual server object.</p>
 
-  <ul class="posts">
-    
-      <li>
-        <span class="post-date">Dec 23, 2014</span>
-        <a class="post-link" href="/f5/gtm/2014/12/23/GTM-Translation-addresses-for-Generic-Host-objects/">GTM Translation addresses for Generic Host objects</a>
-      </li>
-    
-      <li>
-        <span class="post-date">Dec 23, 2014</span>
-        <a class="post-link" href="/f5/gtm/2014/12/23/split-dns-with-gtm/">Split DNS with GTM</a>
-      </li>
-    
-  </ul>
+<p>This can be frustrating, the user experience for this configuration is honestly pretty awful in the F5 web interface.  One would think that if translation addresses did nothing for non-iquery monitored server objects then the GUI &amp; configuration objects would not allow their configuration which only causes further confusion.</p>
 
-  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
+<p>For an overview of split DNS configuration on the GTM see: <a href="/f5/gtm/2014/12/23/split-dns-with-gtm/">Spit DNS with GTM</a></p>
+
+<h2 id="broken-configuration">Broken Configuration</h2>
+
+<p>The configuration below does not work as one might expect.  </p>
+
+<p>One might expect the GTM to issue the following health monitors:</p>
+
+<ul>
+  <li>
+    <p>gateway_icmp to 172.20.1.31 the server object address.</p>
+  </li>
+  <li>
+    <p>tcp_half_open to 172.20.1.31:80 for the “GenericServer01-internal” virtual server object.</p>
+  </li>
+  <li>
+    <p>tcp_half_open to 172.20.1.31:80 for the “GenericServer01-external” virtual server object, due to the inclusion of the translation-address &amp; translation-port.</p>
+  </li>
+</ul>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text">gtm server /Common/GenericServer01 {
+    addresses {
+        172.20.1.31 {
+            device-name GenericServer01
+        }
+    }
+    datacenter /Common/DataCenter01
+    monitor /Common/gateway_icmp
+    virtual-servers {
+        GenericServer01-external {
+            destination 192.0.2.31:80
+            monitor /Common/tcp_half_open
+            translation-address 172.20.1.31
+        }
+        GenericServer01-internal {
+            destination 172.20.1.31:80
+            monitor /Common/tcp_half_open
+        }
+    }
+}</code></pre></div>
+
+<p>However what actually happens is as follows:</p>
+
+<ul>
+  <li>
+    <p>gateway_icmp to 172.20.1.31 the server object address.</p>
+  </li>
+  <li>
+    <p>tcp_half_open to 172.20.1.31:80 for the “GenericServer01-internal” virtual server object.</p>
+  </li>
+  <li>
+    <p>tcp_half_open to 192.0.2.31:80 for the “GenericServer01-external” virtual server object, because translation addresses are ignored for non-iquery or bigip monitored objects.</p>
+  </li>
+</ul>
+
+<p>This often leaves the public or external virtual server object marked down as many organizations do not configure their firewalls for hairpin NAT.</p>
+
+<h2 id="working-configuration">Working Configuration</h2>
+
+<p>First, a few considerations, I’d argue the best possible fix is to setup public IP addresses on your LTMs and let them act as your primary edge device.  This puts all the management and configuration for your public presence on a highly secure, highly scalable, best of breed system.</p>
+
+<p>I’d argue the best possible fix is to setup or enable hairpin NAT on the firewall or router performing the external NAT.  In an ideal world the F5 would monitor via the public IP address so that if the device performing NAT goes down the F5 correctly marks the system as down.</p>
+
+<p>If all that is not possible and you must monitor the private address while handing out the public address then continue reading.  The way to configure a generic host server/virtual server object for NAT translation is to use alias addresses a health monitor assigned to the public virtual server object.  This should sound familiar from LTM, an alias address on a health monitor allows us to apply that health check to any arbitrary virtual server or server object in the GTM, while actually having the health check go to a different address/port.</p>
+
+<p>The disadvantage of this configuration is that you’ll end up creating and maintaining a lot of very specific GTM monitors with address aliases for all of your NATed generic objects.</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text">gtm monitor tcp-half-open /Common/GenericServer01-tcp-half-open {
+    defaults-from /Common/tcp_half_open
+    destination 172.20.1.31:80
+    interval 30
+    probe-attempts 3
+    probe-interval 1
+    probe-timeout 5
+    timeout 120
+}
+gtm server /Common/GenericServer01 {
+    addresses {
+        172.20.1.31 {
+            device-name GenericServer01
+        }
+    }
+    datacenter /Common/DataCenter01
+    monitor /Common/gateway_icmp
+    virtual-servers {
+        GenericServer01-external {
+            destination 192.0.2.31:80
+            monitor /Common/GenericServer01-tcp-half-open
+        }
+        GenericServer01-internal {
+            destination 172.20.1.31:80
+            monitor /Common/tcp_half_open
+        }
+    }
+}</code></pre></div>
+
+<ul>
+  <li>Note: Unfortunately, GTM monitors require a destination IP and port if a specific IP is used.  Ideally we could configure a monitor with a specific destination address and a wildcard port.</li>
+</ul>
+
+
+</div>
+
+<div class="post">
+<h1 class="post-title">
+<a href="/f5/gtm/2014/12/23/split-dns-with-gtm/">
+Split DNS with GTM
+</a>
+</h1>
+<span class="post-date">23 Dec 2014</span>
+<p>NAT adds complexity to everything, I avoid it whenever possible, however it’s a necessary evil of our IPv4 world.  A common configuration that needs to be addressed in GTM deployments is NAT and split DNS.  Often the GTM will need to respond to internal queries with a private IP address while external queries get a public IP address.  This is typically done inside GTM with topology records and possibly a combination of internal and external pools containing different virtual server objects.</p>
+
+<h1 id="avoid-split-dns-when-possible">Avoid Split DNS when possible</h1>
+<p>I strongly advocate that administrators simply hand out external public IP addresses for anything that is externally accessible.  This allows you to avoid the entire problem space around split DNS and the additional configuration overhead and complexity it brings to your environment.  Many will argue about the inefficiency of configurations that use <a href="http://tools.ietf.org/html/rfc4787#section-6">Hairpin nat</a>, the arguments typically revolve around hairpinning putting additional load on the NAT device &amp; causing inefficient traffic flows on the network.  However, if there are capacity concerns about the NAT device, then what’s the expectation for when a syn-flood or other DOS attack hits the nat box from the Internet?  Additionally, complexity is every IT operations worst enemy, if you can reduce configuration complexity at the cost of a bigger firewall that’s a huge win.  Firewalls are cheap compared to outages and additional labor overhead caused by complexity.</p>
+
+<p>If however, hairpin nat is not an option for you, continue on.  <a href="https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html">F5’s Achieving split DNS behavior through BIG-IP GTM wide IPs</a> walks you though the steps to configure split dns on GTM.  However it lacks configuration examples, this post is intended to clarify configurations where needed and to provide some example configuration snippets.</p>
+
+<h2 id="work-in-progress">work in progress….</h2>
+
+<h1 id="using-translation-fields-in-virtual-server-objects">Using Translation fields in virtual server objects</h1>
+<p><a href="https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html">F5’s Configuring BIG-IP GTM server objects for BIG-IP devices that reside behind a firewall NAT</a> covers this fairly well.</p>
+
+<h1 id="pool-creation">Pool Creation</h1>
+
+<h1 id="topology-records">Topology Records</h1>
+
+<h1 id="gluing-it-all-together">Gluing it all together</h1>
+
+
+</div>
+
+</div>
+<div class="pagination">
+
+<span class="pagination-item older">Older</span>
+
+
+<span class="pagination-item newer">Newer</span>
 
 </div>
 
