@@ -1,0 +1,42 @@
+# Site settings
+title: Mark Hermsdorfer
+name: Mark Hermsdorfer
+email: mark@hermsdorfer.net
+description: "Hi, I'm Mark Hermsdorfer, a operations architect with a focus on networking and application delivery infrastructure.  I write about various topics including my time as an F5 Networks consultant."
+url: "http://mhermsdorfer.github.io"
+imagesurl: http://hermsdorfer.github.io/images
+
+# If you're hosting your site at a Project repository on GitHub pages
+# (http://yourusername.github.io/repository-name)
+# and NOT your User repository (http://yourusername.github.io)
+# then add in the baseurl here, like this: "/repository-name"
+baseurl: ""
+
+
+#twitter_username: MarkHermsdorfer
+github_username:  mhermsdorfer
+#avatar: foo
+
+# Enter your Google Analytics web tracking code (e.g. UA-2110908-2) to activate tracking
+#google_analytics: 
+
+# Includes an icon in the footer for each username you enter
+footer-links:
+  dribbble:
+  email: mark@hermsdorfer.net
+  #facebook:
+  #flickr:
+  github: mhermsdorfer
+  #instagram:
+  linkedin: mhermsdorfer
+  #pinterest:
+  rss: rss
+  #twitter: baznyc
+
+
+# Build settings
+markdown: kramdown
+permalink: pretty
+
+paginate: 5
+
