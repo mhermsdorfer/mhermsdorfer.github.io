@@ -11,6 +11,8 @@ The F5 is a high performance SSL platform and often acts as a central decryption
 
 However, if the F5 is performing ssl bridging things get slightly more complex.  This is due to how the F5's proxy chain or HUD chain works.  The clone pool action is performed very early on the client-side and very late on the server-side, in-fact it happens prior to ssl decryption on the client-side of the proxy and after ssl encryption on the server-side.  Because of this, we need to setup two VIPs, the first VIP will terminate ssl from the client, then send the cleartext http to another vip.  The second vip will then re-encrypt ssl and send the http request to servers.  We can then place a clone-pool on the server-side of the first vip and mirror unencrypted to our IDS system.
 
+For more details on clone pools see: [F5's Configuring Configuring the BIG-IP system to send traffic to an intrusion detection system ](https://support.f5.com/kb/en-us/solutions/public/13000/300/sol13392.html#clone)
+
 
 ## Configuration example
 
