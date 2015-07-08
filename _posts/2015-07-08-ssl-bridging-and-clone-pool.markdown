@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "LTM clone pools & SSL Bridging"
-date:   2014-12-23 17:54:25
+date:   2015-07-08 10:54:25
 categories: F5 LTM
 ---
 
@@ -17,7 +17,7 @@ However, if the F5 is performing ssl bridging things get slightly more complex. 
 Let's walk though how to create a configuration using VIP targeting VIP for cloning cleartext traffic while the F5 performs SSL bridging.
 
 
-* First create pools, one for the server-side traffic, the other for our IDS system that we'll clone traffic to:
+First create pools, one for the server-side traffic, the other for our IDS system that we'll clone traffic to:
 {% highlight text %}
 ltm pool /Common/sitefoo.bar.com-clone-pool {
     members {
@@ -37,8 +37,9 @@ ltm pool /Common/sitefoo.bar.com-server-pool {
 }
 {% endhighlight %}
 
-* Next let's create a server-side VIP.  This VIP will use a pool with the back-end web servers, and will have server-ssl but no client-ssl.  It will accept clear text http on it's client-side and send ssl encrypted http to the servers on it's server-side.
-* NOTE: You should secure this virtual server such that it can-not be accessed by end-users, you can do this with AFM rules, or by using a non-routable destination address.
+Next let's create a server-side VIP.  This VIP will use a pool with the back-end web servers, and will have server-ssl but no client-ssl.  It will accept clear text http on it's client-side and send ssl encrypted http to the servers on it's server-side.
+
+NOTE: You should secure this virtual server such that it can-not be accessed by end-users, you can do this with AFM rules, or by using a non-routable destination address.
 {% highlight text %}
 ltm virtual /Common/sitefoo.bar.com-server-side-vip {
     destination /Common/10.1.50.160:8443
@@ -62,7 +63,7 @@ ltm virtual /Common/sitefoo.bar.com-server-side-vip {
 {% endhighlight %}
 
 
-* Next let's create an irule that targets the server-side vip from the client-side vip:
+Next let's create an irule that targets the server-side vip from the client-side vip:
 {% highlight text %}
 ltm rule /Common/sitefoo.bar.com-vip-target-vip-ir {
     when HTTP_REQUEST {
@@ -71,7 +72,7 @@ ltm rule /Common/sitefoo.bar.com-vip-target-vip-ir {
 }
 {% endhighlight %}
 
-* finally, create a client-side VIP.
+Finally, create a client-side VIP.  This VIP has a clientssl on the client-side of the proxy that terminates ssl, 
 {% highlight text %}
 ltm virtual /Common/sitefoo.bar.com-client-side-vip {
     clone-pools {
