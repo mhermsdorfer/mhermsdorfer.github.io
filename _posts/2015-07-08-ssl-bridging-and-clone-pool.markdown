@@ -74,7 +74,7 @@ ltm rule /Common/sitefoo.bar.com-vip-target-vip-ir {
 }
 {% endhighlight %}
 
-Finally, create a client-side VIP.  This VIP has a clientssl on the client-side of the proxy that terminates ssl, 
+Finally, create a client-side VIP.  This VIP has a clientssl on the client-side of the proxy that terminates ssl, the clone-pool on the server-side of the proxy and finally the iRule that tells teh F5 to send traffic to the other virtual server.  Notably, it does not have a default pool.
 {% highlight text %}
 ltm virtual /Common/sitefoo.bar.com-client-side-vip {
     clone-pools {

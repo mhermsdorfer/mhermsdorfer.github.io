@@ -1,0 +1,9 @@
+# Ignore artifacts
+/vendor/bundle
+/vendor/cache
+_site/
+.sass-cache/
+.jekyll-metadata
+
+# Ignore editor stuff
+.*.swp
