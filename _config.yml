@@ -42,7 +42,7 @@ relative_permalinks: true
 #gems:
 #    - jekyll-sitemap
 
-paginate: 1
+paginate: 2
 
 sass:
   sass_dir:          _sass

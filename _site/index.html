@@ -1,18 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Home</title>
-    <meta name="viewport" content="width=device-width">
-    <meta name="description" content="Hi, I'm Mark Hermsdorfer, a operations architect with a focus on networking and application delivery infrastructure.  I write about various topics including my time as an F5 Networks consultant.">
-    <link rel="canonical" href="http://mhermsdorfer.github.io/">
+  <meta charset="UTF-8">
+  <link href="http://gmpg.org/xfn/11" rel="profile">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/main.css">
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>
+    
+      Mark Hermsdorfer &middot; 
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/styles.css">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/atom+xml" title="Mark Hermsdorfer" href="/atom.xml">
 </head>
+
 
 
     <body>
@@ -37,11 +46,26 @@
       </a>
       <div class="trigger">
         
-          <a class="page-link" href="/about/">About</a>
+          
+            
+              <a class="page-link" href="/about/">About</a>
+            
+          
         
           
         
-          <a class="page-link" href="/">Home</a>
+          
+            
+              <a class="page-link" href="/">Home</a>
+            
+          
+        
+          
+        
+          
+            
+            
+          
         
       </div>
     </nav>
@@ -53,161 +77,243 @@
 
     <div class="page-content">
       <div class="wrap">
-      <div class="posts">
+         <div class="post-content">
+           <div class="posts">
+  
+  <article class="post">
+    <h1 class="post-title">
+      <a href="/f5/ltm/2015/07/09/f5-status-page/">
+        Server status pages for F5 monitoring
+      </a>
+    </h1>
 
-<div class="post">
-<h1 class="post-title">
-<a href="/f5/gtm/2014/12/23/GTM-Translation-addresses-for-Generic-Host-objects/">
-GTM Translation addresses for Generic Host objects
-</a>
-</h1>
-<span class="post-date">23 Dec 2014</span>
-<p>A reading of the <a href="https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html">F5’s Configuring BIG-IP GTM server objects for BIG-IP devices that reside behind a firewall NAT</a> might lead one to believe that translation addresses for non BIG-IP server objects would have a similar effect as they do for BIG-IP objects.  However, translation addresses are ONLY supported by BIG-IP objects when using iQuery or the “bigip” health monitor in GTM.  The translation-address and translation-port configuration options have no impact on generic host or any other non-iquery monitored server or virtual server object.</p>
+    <time datetime="2015-07-09T06:54:25-04:00" class="post-date">09 Jul 2015</time>
 
-<p>This can be frustrating, the user experience for this configuration is honestly pretty awful in the F5 web interface.  One would think that if translation addresses did nothing for non-iquery monitored server objects then the GUI &amp; configuration objects would not allow their configuration which only causes further confusion.</p>
+    <p>Automation is critical in our industry, however many companies opt for a less technically advanced self service play.  One trivially easy way to get some self-service with the F5 platform is though the use of status pages for pool member monitoring.</p>
 
-<p>For an overview of split DNS configuration on the GTM see: <a href="/f5/gtm/2014/12/23/split-dns-with-gtm/">Spit DNS with GTM</a></p>
+<p>In this scenario the application or server administrators setup a status page, that status page can be as complex as the application or server administrators like.  On the higher end it could be a jsp page that checks the status of various other services and databases reporting overall application health.  On the lower end it can be a simple static html page.</p>
 
-<h2 id="broken-configuration">Broken Configuration</h2>
+<p>By modifying the output of the status page the application administrators can indicate to the F5 if traffic should be sent to the server.  This allows server &amp; application team members to perform maintenance on their servers without involvement from the F5 operators to disable pool member.</p>
 
-<p>The configuration below does not work as one might expect.  </p>
+<p>For more details on monitor regex strings: <a href="https://support.f5.com/kb/en-us/solutions/public/5000/900/sol5917.html">Using regular expressions in a health monitor Receive String</a></p>
 
-<p>One likely expects the GTM to issue the following health monitors:</p>
+<p>For more details on monitor disable strings: <a href="https://support.f5.com/kb/en-us/solutions/public/12000/800/sol12818.html">Using the Receive Disable String advanced configuration setting</a></p>
 
-<ul>
-  <li>
-    <p>gateway_icmp to 172.20.1.31 the server object address.</p>
-  </li>
-  <li>
-    <p>tcp_half_open to 172.20.1.31:80 for the “GenericServer01-internal” virtual server object.</p>
-  </li>
-  <li>
-    <p>tcp_half_open to 172.20.1.31:80 for the “GenericServer01-external” virtual server object, due to the inclusion of the translation-address &amp; translation-port.</p>
-  </li>
-</ul>
+<h2 id="configuration-example">Configuration example</h2>
 
-<div class="highlight"><pre><code class="language-text" data-lang="text">gtm server /Common/GenericServer01 {
-    addresses {
-        172.20.1.31 {
-            device-name GenericServer01
-        }
-    }
-    datacenter /Common/DataCenter01
-    monitor /Common/gateway_icmp
-    virtual-servers {
-        GenericServer01-external {
-            destination 192.0.2.31:80
-            monitor /Common/tcp_half_open
-            translation-address 172.20.1.31
-        }
-        GenericServer01-internal {
-            destination 172.20.1.31:80
-            monitor /Common/tcp_half_open
-        }
-    }
+<p>Here is an example static status page I’ve used previously.  There is nothing complex, it includes some details so operators can see their various status options.</p>
+
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">&quot;en&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">&quot;content-type&quot;</span> <span class="na">content=</span><span class="s">&quot;text/html; charset=UTF-8&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;title&gt;</span> Application Status Page <span class="nt">&lt;/title&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h1&gt;</span> Application Status Page <span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;h1&gt;</span> status=up <span class="nt">&lt;/h1&gt;</span>
+
+    <span class="nt">&lt;p&gt;</span> Modify the current server status on header above, leaving no space between status= and expected status.  The server status can be set to various options as follows:
+    <span class="nt">&lt;ul&gt;</span>
+        <span class="nt">&lt;li&gt;</span> up or online:     Server is normal and eligable for all traffic. <span class="nt">&lt;/li&gt;</span>
+        <span class="nt">&lt;li&gt;</span> quiesce or drain: Server is going offline and eligable only for existing sessions. <span class="nt">&lt;/li&gt;</span>
+        <span class="nt">&lt;li&gt;</span> down or offline:  Server is down and not eligable any traffic. <span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;/ul&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span></code></pre></div>
+
+<p>Here is an example HTTP status monitor on the F5 that works with the above status page.</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text">ltm monitor http /Common/status-http-monitor {
+    adaptive disabled
+    defaults-from /Common/http
+    destination *:*
+    interval 5
+    ip-dscp 0
+    recv &quot;status=(up|online)&quot;
+    recv-disable &quot;status=(quiesce|disabled|drain)&quot;
+    send &quot;GET /status.html HTTP/1.1\\r\\nHost: status.com\\r\\nConnection: close\\r\\n\\r\\n&quot;
+    time-until-up 0
+    timeout 16
 }</code></pre></div>
 
-<p>However what actually happens is as follows:</p>
+<p>The same monitor as above, except this one is for HTTPS.</p>
 
-<ul>
-  <li>
-    <p>gateway_icmp to 172.20.1.31 the server object address.</p>
-  </li>
-  <li>
-    <p>tcp_half_open to 172.20.1.31:80 for the “GenericServer01-internal” virtual server object.</p>
-  </li>
-  <li>
-    <p>tcp_half_open to 192.0.2.31:80 for the “GenericServer01-external” virtual server object, because translation addresses are ignored for non-iquery or bigip monitored objects.</p>
-  </li>
-</ul>
+<div class="highlight"><pre><code class="language-text" data-lang="text">ltm monitor https /Common/status-https-monitor {
+    adaptive disabled
+    cipherlist DEFAULT:+SHA:+3DES:+kEDH
+    compatibility enabled
+    defaults-from /Common/https
+    destination *:*
+    interval 5
+    ip-dscp 0
+    recv &quot;status=(up|online)&quot;
+    recv-disable &quot;status=(quiesce|disabled|drain)&quot;
+    send &quot;GET /status.html HTTP/1.1\\\\r\\\\nHost: status.com\\\\r\\\\nConnection: close\\\\r\\\\n\\\\r\\\\n&quot;
+    time-until-up 0
+    timeout 16
+}</code></pre></div>
 
-<p>This often leaves the public or external virtual server object marked down as many organizations do not configure their firewalls for <a href="http://tools.ietf.org/html/rfc4787#section-6">Hairpin nat</a>.</p>
 
-<h2 id="working-configuration">Working Configuration</h2>
+  </article>
+  
+  <article class="post">
+    <h1 class="post-title">
+      <a href="/f5/ltm/2015/07/08/ssl-bridging-and-clone-pool/">
+        LTM clone pools & SSL Bridging
+      </a>
+    </h1>
 
-<p>First, a few considerations, I’d argue the best possible fix is to setup public IP addresses on your LTMs and let them act as your primary edge device.  This puts all the management and configuration for your public presence on a highly secure, highly scalable, best of breed system.</p>
+    <time datetime="2015-07-08T06:54:25-04:00" class="post-date">08 Jul 2015</time>
 
-<p>Failing using F5 LTM for all external IPs the next best fix is to setup or enable hairpin NAT on the firewall or router performing the external NAT.  In an ideal world the F5 would monitor via the public IP address so that if the device performing NAT goes down the F5 correctly marks the system as down.</p>
+    <p>Security teams often want to place intrusion detection devices (IDS) on the network in order to monitor network traffic for signs of intrusion.  Often this is accomplished with network taps and/or switch monitor ports, such setups provide the security team all packets on the network.  Increasingly, the packets won’t tell the security team much due to SSL encryption.  If all payloads are encrypted, then an attackers traffic will look the same as legitimate traffic.  What the security teams really needs are unencrypted traffic flows.</p>
 
-<p>If all that is not possible and you must monitor the private address while handing out the public address then continue reading.  The way to configure a generic host server/virtual server object for NAT translation is to use alias addresses a health monitor assigned to the public virtual server object.  This should sound familiar from LTM, an alias address on a health monitor allows us to apply that health check to any arbitrary virtual server or server object in the GTM, while actually having the health check go to a different address/port.</p>
+<p>The F5 is a high performance SSL platform and often acts as a central decryption/encryption point for applications.  As such, it makes for a great place to strip off ssl and send the decrypted flow to an IDS appliance.  Fortunately F5 makes such configurations easy with the clone pool feature, these can be configured per virtual server, and can copy the traffic from the proxies client-side or server-side.  This works great when you’re not running any SSL or the F5 is performing SSL offload, in the offload case you simply assign a clone-pool to the server-side of the proxy, and clear-text traffic is sent to the IDS systems.</p>
 
-<p>The disadvantage of this configuration is that you’ll end up creating and maintaining a lot of very specific GTM monitors with address aliases for all of your NATed generic objects.</p>
+<p>However, if the F5 is performing ssl bridging things get slightly more complex.  This is due to how the F5’s proxy chain or HUD chain works.  The clone pool action is performed very early on the client-side and very late on the server-side, in-fact it happens prior to ssl decryption on the client-side of the proxy and after ssl encryption on the server-side.  Because of this, we need to setup two VIPs, the first VIP will terminate ssl from the client, then send the cleartext http to another vip.  The second vip will then re-encrypt ssl and send the http request to servers.  We can then place a clone-pool on the server-side of the first vip and mirror unencrypted to our IDS system.</p>
 
-<div class="highlight"><pre><code class="language-text" data-lang="text">gtm monitor tcp-half-open /Common/GenericServer01-tcp-half-open {
-    defaults-from /Common/tcp_half_open
-    destination 172.20.1.31:80
-    interval 30
-    probe-attempts 3
-    probe-interval 1
-    probe-timeout 5
-    timeout 120
+<p>For more details on clone pools see: <a href="https://support.f5.com/kb/en-us/solutions/public/13000/300/sol13392.html#clone">F5’s Configuring Configuring the BIG-IP system to send traffic to an intrusion detection system </a></p>
+
+<h2 id="configuration-example">Configuration example</h2>
+
+<p>Let’s walk though how to create a configuration using VIP targeting VIP for cloning cleartext traffic while the F5 performs SSL bridging.</p>
+
+<p>First create pools, one for the server-side traffic, the other for our IDS system that we’ll clone traffic to:</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text">ltm pool /Common/sitefoo.bar.com-clone-pool {
+    members {
+        /Common/ids-system:12345 {
+            address 10.2.200.200
+        }
+    }
+    monitor /Common/tcp_half_open
 }
-gtm server /Common/GenericServer01 {
-    addresses {
-        172.20.1.31 {
-            device-name GenericServer01
+ltm pool /Common/sitefoo.bar.com-server-pool {
+    members {
+        /Common/venkman:443 {
+            address 10.2.1.51
         }
     }
-    datacenter /Common/DataCenter01
-    monitor /Common/gateway_icmp
-    virtual-servers {
-        GenericServer01-external {
-            destination 192.0.2.31:80
-            monitor /Common/GenericServer01-tcp-half-open
-        }
-        GenericServer01-internal {
-            destination 172.20.1.31:80
-            monitor /Common/tcp_half_open
-        }
-    }
+    monitor /Common/tcp_half_open
 }</code></pre></div>
 
-<ul>
-  <li>Note: Unfortunately, GTM monitors require a destination IP and port if a specific IP is used.  Ideally we could configure a monitor with a specific destination address and a wildcard port.</li>
-</ul>
+<p>Next let’s create a server-side VIP.  This VIP will use a pool with the back-end web servers, and will have server-ssl but no client-ssl.  It will accept clear text http on it’s client-side and send ssl encrypted http to the servers on it’s server-side.</p>
+
+<p>NOTE: You should secure this virtual server such that it can-not be accessed by end-users, you can do this with AFM rules, or by using a non-routable destination address.</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text">ltm virtual /Common/sitefoo.bar.com-server-side-vip {
+    destination /Common/10.1.50.160:8443
+    ip-protocol tcp
+    mask 255.255.255.255
+    pool /Common/sitefoo.bar.com-server-pool
+    profiles {
+        /Common/http { }
+        /Common/serverssl-insecure-compatible {
+            context serverside
+        }
+        /Common/tcp { }
+    }
+    source 0.0.0.0/0
+    source-address-translation {
+        type automap
+    }
+    translate-address enabled
+    translate-port enabled
+}</code></pre></div>
+
+<p>Next let’s create an irule that targets the server-side vip from the client-side vip:</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text">ltm rule /Common/sitefoo.bar.com-vip-target-vip-ir {
+    when HTTP_REQUEST {
+    virtual sitefoo.bar.com-server-side-vip
+}
+}</code></pre></div>
+
+<p>Finally, create a client-side VIP.  This VIP has a clientssl on the client-side of the proxy that terminates ssl, the clone-pool on the server-side of the proxy and finally the iRule that tells teh F5 to send traffic to the other virtual server.  Notably, it does not have a default pool.</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text">ltm virtual /Common/sitefoo.bar.com-client-side-vip {
+    clone-pools {
+        /Common/sitefoo.bar.com-clone-pool {
+            context serverside
+        }
+    }
+    destination /Common/10.1.50.160:443
+    ip-protocol tcp
+    mask 255.255.255.255
+    profiles {
+        /Common/clientssl {
+            context clientside
+        }
+        /Common/http { }
+        /Common/tcp { }
+    }
+    rules {
+        /Common/sitefoo.bar.com-vip-target-vip-ir
+    }
+    source 0.0.0.0/0
+    translate-address enabled
+    translate-port enabled
+}</code></pre></div>
 
 
+  </article>
+  
 </div>
 
-<div class="post">
-<h1 class="post-title">
-<a href="/f5/gtm/2014/12/23/split-dns-with-gtm/">
-Split DNS with GTM
-</a>
-</h1>
-<span class="post-date">23 Dec 2014</span>
-<p>NAT adds complexity to everything, I avoid it whenever possible, however it’s a necessary evil of our IPv4 world.  A common configuration that needs to be addressed in GTM deployments is NAT and split DNS.  Often the GTM will need to respond to internal queries with a private IP address while external queries get a public IP address.  This is typically done inside GTM with topology records and possibly a combination of internal and external pools containing different virtual server objects.</p>
-
-<h1 id="avoid-split-dns-when-possible">Avoid Split DNS when possible</h1>
-<p>I strongly advocate that administrators simply hand out external public IP addresses for anything that is externally accessible.  This allows you to avoid the entire problem space around split DNS and the additional configuration overhead and complexity it brings to your environment.  Many will argue about the inefficiency of configurations that use <a href="http://tools.ietf.org/html/rfc4787#section-6">Hairpin nat</a>, the arguments typically revolve around hairpinning putting additional load on the NAT device &amp; causing inefficient traffic flows on the network.  However, if there are capacity concerns about the NAT device, then what’s the expectation for when a syn-flood or other DOS attack hits the nat box from the Internet?  Additionally, complexity is every IT operations worst enemy, if you can reduce configuration complexity at the cost of a bigger firewall that’s a huge win.  Firewalls are cheap compared to outages and additional labor overhead caused by complexity.</p>
-
-<p>If however, hairpin nat is not an option for you, continue on.  <a href="https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html">F5’s Achieving split DNS behavior through BIG-IP GTM wide IPs</a> walks you though the steps to configure split dns on GTM.  However it lacks configuration examples, this post is intended to clarify configurations where needed and to provide some example configuration snippets.</p>
-
-<h1 id="sorry-work-in-progress">Sorry work in progress…</h1>
-
-<h1 id="using-translation-fields-in-virtual-server-objects">Using Translation fields in virtual server objects</h1>
-
-<p><a href="https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html">F5’s Configuring BIG-IP GTM server objects for BIG-IP devices that reside behind a firewall NAT</a> covers this fairly well.</p>
-
-<h1 id="pool-creation">Pool Creation</h1>
-
-<h1 id="topology-records">Topology Records</h1>
-
-<h1 id="gluing-it-all-together">Gluing it all together</h1>
-
-
-</div>
-
-</div>
 <div class="pagination">
-
-<span class="pagination-item older">Older</span>
-
-
-<span class="pagination-item newer">Newer</span>
-
+  
+    <a class="pagination-item older" href="/page2">Older</a>
+  
+  
+    <span class="pagination-item newer">Newer</span>
+  
 </div>
 
+<aside class="related">
+  <h2>Recent Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/f5/ltm/2015/07/09/f5-status-page/">
+            Server status pages for F5 monitoring
+            <small><time datetime="2015-07-09T06:54:25-04:00">09 Jul 2015</time></small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/f5/ltm/2015/07/08/ssl-bridging-and-clone-pool/">
+            LTM clone pools & SSL Bridging
+            <small><time datetime="2015-07-08T06:54:25-04:00">08 Jul 2015</time></small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/f5/gtm/2014/12/23/GTM-Translation-addresses-for-Generic-Host-objects/">
+            GTM Translation addresses for Generic Host objects
+            <small><time datetime="2014-12-23T12:54:25-05:00">23 Dec 2014</time></small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/f5/gtm/2014/12/23/split-dns-with-gtm/">
+            Split DNS with GTM
+            <small><time datetime="2014-12-23T10:32:34-05:00">23 Dec 2014</time></small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</aside>
+
+         </div>
       </div>
     </div>
 
@@ -250,7 +356,7 @@ Split DNS with GTM
     </div>
 
     <div class="footer-col-3 column">
-      <p class="text">Hi, I'm Mark Hermsdorfer, a operations architect with a focus on networking and application delivery infrastructure.  I write about various topics including my time as an F5 Networks consultant.</p>
+      <p class="text">Hi, I'm Mark Hermsdorfer, an operations architect with a focus on networking and application delivery infrastructure.  I write about various topics including my time as an F5 Networks consultant.</p>
     </div>
 
   </div>
