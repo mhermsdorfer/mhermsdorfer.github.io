@@ -32,9 +32,9 @@ Here is an example static status page I've used previously.  There is nothing co
 
     <p> Modify the current server status on header above, leaving no space between status= and expected status.  The server status can be set to various options as follows:
     <ul>
-        <li> up or online:     Server is normal and eligable for all traffic. </li>
-        <li> quiesce or drain: Server is going offline and eligable only for existing sessions. </li>
-        <li> down or offline:  Server is down and not eligable any traffic. </li>
+        <li> up or online:     Server is normal and eligible for all traffic. </li>
+        <li> quiesce or drain: Server is going offline and eligible only for existing sessions. </li>
+        <li> down or offline:  Server is down and not eligible any traffic. </li>
     </ul>
     </p>
   </body>
