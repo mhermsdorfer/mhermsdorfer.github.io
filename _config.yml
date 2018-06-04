@@ -37,7 +37,6 @@ footer-links:
 # Build settings
 markdown: kramdown
 permalink: pretty
-relative_permalinks: true
 
 #gems:
 #    - jekyll-sitemap
