@@ -5,8 +5,8 @@
     <description>Hi, I&#39;m Mark Hermsdorfer, an operations architect with a focus on networking and application delivery infrastructure.  I write about various topics including my time as an F5 Networks consultant.</description>
     <link>http://blog.hermsdorfer.net/</link>
     <atom:link href="http://blog.hermsdorfer.net/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 04 Jun 2018 13:03:59 -0400</pubDate>
-    <lastBuildDate>Mon, 04 Jun 2018 13:03:59 -0400</lastBuildDate>
+    <pubDate>Mon, 04 Jun 2018 13:55:36 -0400</pubDate>
+    <lastBuildDate>Mon, 04 Jun 2018 13:55:36 -0400</lastBuildDate>
     <generator>Jekyll v2.2.0</generator>
     
       <item>
@@ -40,9 +40,19 @@
       &lt;td&gt;&lt;a href=&quot;https://origin-symwisedownload.symantec.com/resources/webguides/cacheflow/3x/3_4/webguide/Content/CLI/config_return-to-send.htm&quot;&gt;RTS CLI Reference&lt;/a&gt;&lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
+      &lt;td&gt;Citrix NetScaler&lt;/td&gt;
+      &lt;td&gt;MAC-based forwarding (MBF)&lt;/td&gt;
+      &lt;td&gt;&lt;a href=&quot;https://docs.citrix.com/ja-jp/netscaler/11/networking/interfaces/configuring-mac-based-forwarding.html&quot;&gt;Configuring MAC-Based Forwarding&lt;/a&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Juniper ScreenOS&lt;/td&gt;
+      &lt;td&gt;Flow reverse-route MAC Cache&lt;/td&gt;
+      &lt;td&gt;&lt;a href=&quot;https://kb.juniper.net/InfoCenter/index?page=content&amp;amp;id=KB19924&quot;&gt;Behavior of ‘set flow’ commands in asymmetric routing scenario&lt;/a&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
       &lt;td&gt;Check Point&lt;/td&gt;
       &lt;td&gt;unsure&lt;/td&gt;
-      &lt;td&gt;I’m pretty sure this feature exists for checkpoint, however I can’t find it’s name&lt;/td&gt;
+      &lt;td&gt;I’m pretty sure this feature exists for checkpoint, however I can’t find docs/name.&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;

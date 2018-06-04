@@ -16,4 +16,6 @@ This post simply catalogs the names various vendors call this feature.  There is
 | F5 Networks | Auto Last Hop (ALH)    | [K13876: Overview of the Auto Last Hop setting](https://support.f5.com/csp/article/K13876) |
 | Palo Alto   | Symmetric Return       | [How to Configure Symmetric Return](https://live.paloaltonetworks.com/t5/Configuration-Articles/How-to-Configure-Symmetric-Return/ta-p/59374) |
 | BlueCoat    | Return-To-Sender (RTS) | [RTS CLI Reference](https://origin-symwisedownload.symantec.com/resources/webguides/cacheflow/3x/3_4/webguide/Content/CLI/config_return-to-send.htm) |
-| Check Point | unsure                 | I'm pretty sure this feature exists for checkpoint, however I can't find it's name |
+| Citrix NetScaler | MAC-based forwarding (MBF) | [Configuring MAC-Based Forwarding](https://docs.citrix.com/ja-jp/netscaler/11/networking/interfaces/configuring-mac-based-forwarding.html) |
+| Juniper ScreenOS | Flow reverse-route MAC Cache | [Behavior of 'set flow' commands in asymmetric routing scenario](https://kb.juniper.net/InfoCenter/index?page=content&id=KB19924) |
+| Check Point | unsure                 | I'm pretty sure this feature exists for checkpoint, however I can't find docs/name. |
