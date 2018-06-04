@@ -67,6 +67,16 @@
             
           
         
+          
+            
+            
+          
+        
+          
+            
+            
+          
+        
       </div>
     </nav>
 
@@ -79,6 +89,53 @@
       <div class="wrap">
          <div class="post-content">
            <div class="posts">
+  
+  <article class="post">
+    <h1 class="post-title">
+      <a href="/f5/ltm/afm/2018/06/04/Source-MAC-based-routing/">
+        Source MAC based routing
+      </a>
+    </h1>
+
+    <time datetime="2018-06-04T06:54:25-04:00" class="post-date">04 Jun 2018</time>
+
+    <p>Several network/firwall vendors offer a feature that overrides the routing table to return traffic to the MAC address that initiated the connection.  The idea here is to store the MAC address that the SYN packet came from in the connection table, then when sending return traffic for that flow, to send it to the MAC address that the SYN came from.  This overrides the destination based routing table and helps prevent asymmetrical routing.  Depending upon your point of view, this is either very helpful or very confusing.</p>
+
+<p>This post simply catalogs the names various vendors call this feature.  There is no standard name, as such it can be very confusing when talking with different vendors.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Vendor</th>
+      <th>Feature Name</th>
+      <th>Documentation Link</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>F5 Networks</td>
+      <td>Auto Last Hop (ALH)</td>
+      <td><a href="https://support.f5.com/csp/article/K13876">K13876: Overview of the Auto Last Hop setting</a></td>
+    </tr>
+    <tr>
+      <td>Palo Alto</td>
+      <td>Symmetric Return</td>
+      <td><a href="https://live.paloaltonetworks.com/t5/Configuration-Articles/How-to-Configure-Symmetric-Return/ta-p/59374">How to Configure Symmetric Return</a></td>
+    </tr>
+    <tr>
+      <td>BlueCoat</td>
+      <td>Return-To-Sender (RTS)</td>
+      <td><a href="https://origin-symwisedownload.symantec.com/resources/webguides/cacheflow/3x/3_4/webguide/Content/CLI/config_return-to-send.htm">RTS CLI Reference</a></td>
+    </tr>
+    <tr>
+      <td>Check Point</td>
+      <td>unsure</td>
+      <td>I’m pretty sure this feature exists for checkpoint, however I can’t find it’s name</td>
+    </tr>
+  </tbody>
+</table>
+
+  </article>
   
   <article class="post">
     <h1 class="post-title">
@@ -103,29 +160,29 @@
 
 <p>Here is an example static status page I’ve used previously.  There is nothing complex, it includes some details so operators can see their various status options.</p>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
-<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">&quot;en&quot;</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;head&gt;</span>
-    <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">&quot;content-type&quot;</span> <span class="na">content=</span><span class="s">&quot;text/html; charset=UTF-8&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;title&gt;</span> Application Status Page <span class="nt">&lt;/title&gt;</span>
-  <span class="nt">&lt;/head&gt;</span>
-  <span class="nt">&lt;body&gt;</span>
-    <span class="nt">&lt;h1&gt;</span> Application Status Page <span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;h1&gt;</span> status=up <span class="nt">&lt;/h1&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">http-equiv</span><span class="o">=</span><span class="s">&quot;content-type&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;text/html; charset=UTF-8&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span> Application Status Page <span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span> Application Status Page <span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span> status=up <span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
 
-    <span class="nt">&lt;p&gt;</span> Modify the current server status on header above, leaving no space between status= and expected status.  The server status can be set to various options as follows:
-    <span class="nt">&lt;ul&gt;</span>
-        <span class="nt">&lt;li&gt;</span> up or online:     Server is normal and eligible for all traffic. <span class="nt">&lt;/li&gt;</span>
-        <span class="nt">&lt;li&gt;</span> quiesce or drain: Server is going offline and eligible only for existing sessions. <span class="nt">&lt;/li&gt;</span>
-        <span class="nt">&lt;li&gt;</span> down or offline:  Server is down and not eligible any traffic. <span class="nt">&lt;/li&gt;</span>
-    <span class="nt">&lt;/ul&gt;</span>
-    <span class="nt">&lt;/p&gt;</span>
-  <span class="nt">&lt;/body&gt;</span>
-<span class="nt">&lt;/html&gt;</span></code></pre></div>
+    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span> Modify the current server status on header above, leaving no space between status= and expected status.  The server status can be set to various options as follows:
+    <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span> up or online:     Server is normal and eligible for all traffic. <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span> quiesce or drain: Server is going offline and eligible only for existing sessions. <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span> down or offline:  Server is down and not eligible any traffic. <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span></code></pre></div>
 
 <p>Here is an example HTTP status monitor on the F5 that works with the above status page.</p>
 
-<div class="highlight"><pre><code class="language-text" data-lang="text">ltm monitor http /Common/status-http-monitor {
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>ltm monitor http /Common/status-http-monitor {
     adaptive disabled
     defaults-from /Common/http
     destination *:*
@@ -140,7 +197,7 @@
 
 <p>The same monitor as above, except this one is for HTTPS.</p>
 
-<div class="highlight"><pre><code class="language-text" data-lang="text">ltm monitor https /Common/status-https-monitor {
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>ltm monitor https /Common/status-https-monitor {
     adaptive disabled
     cipherlist DEFAULT:+SHA:+3DES:+kEDH
     compatibility enabled
@@ -153,107 +210,6 @@
     send &quot;GET /status.html HTTP/1.1\\\\r\\\\nHost: status.com\\\\r\\\\nConnection: close\\\\r\\\\n\\\\r\\\\n&quot;
     time-until-up 0
     timeout 16
-}</code></pre></div>
-
-
-  </article>
-  
-  <article class="post">
-    <h1 class="post-title">
-      <a href="/f5/ltm/2015/07/08/ssl-bridging-and-clone-pool/">
-        LTM clone pools & SSL Bridging
-      </a>
-    </h1>
-
-    <time datetime="2015-07-08T06:54:25-04:00" class="post-date">08 Jul 2015</time>
-
-    <p>Security teams place intrusion detection devices (IDS) on the network in order to monitor network traffic for signs of intrusion.  Often this is accomplished with network taps and/or switch monitor ports, such setups provide the security team all packets on the network.  As companies migrate all sites to use SSL payloads are encrypted, and attack traffic looks the same as legitimate traffic.  What the security teams really need are the unencrypted traffic flows.</p>
-
-<p>F5 devices are high performance SSL platforms and often act as a central decryption/encryption point for applications.  As such, it makes for a great place to strip off ssl and send the decrypted flow to an IDS appliance.  Fortunately F5 makes such configurations easy with the clone pool feature.  Clone pools can be configured on a per virtual server basis, they copy the traffic from the proxies client-side or server-side.  This works great when you’re not running any SSL or the F5 is performing SSL offload.  In the of ssl offload you simply assign a clone-pool to the server-side of the proxy, and clear-text traffic is sent to the IDS systems.</p>
-
-<p>However, if the F5 is performing SSL bridging things get slightly more complex.  This is due to how the F5’s proxy chain or HUD chain works.  The clone pool action is performed very early on the client-side and very late on the server-side, in-fact it happens prior to ssl decryption on the client-side of the proxy and after ssl encryption on the server-side.  Because of this, we need to setup two VIPs, the first VIP will terminate ssl from the client, then send the cleartext http to another vip.  The second vip will then re-encrypt ssl and send the http request to servers.  We can then place a clone-pool on the server-side of the first vip and mirror unencrypted to our IDS system.</p>
-
-<p>For more details on clone pools see: <a href="https://support.f5.com/kb/en-us/solutions/public/13000/300/sol13392.html#clone">F5’s Configuring Configuring the BIG-IP system to send traffic to an intrusion detection system </a></p>
-
-<h2 id="configuration-example">Configuration example</h2>
-
-<p>Let’s walk though how to create a configuration using VIP targeting VIP for cloning cleartext traffic while the F5 performs SSL bridging.</p>
-
-<p>First create pools, one for the server-side traffic, the other for our IDS system that we’ll clone traffic to:</p>
-
-<div class="highlight"><pre><code class="language-text" data-lang="text">ltm pool /Common/sitefoo.bar.com-clone-pool {
-    members {
-        /Common/ids-system:12345 {
-            address 10.2.200.200
-        }
-    }
-    monitor /Common/tcp_half_open
-}
-ltm pool /Common/sitefoo.bar.com-server-pool {
-    members {
-        /Common/venkman:443 {
-            address 10.2.1.51
-        }
-    }
-    monitor /Common/tcp_half_open
-}</code></pre></div>
-
-<p>Next let’s create a server-side VIP.  This VIP will use a pool with the back-end web servers, and will have server-ssl but no client-ssl.  It will accept clear text http on it’s client-side and send ssl encrypted http to the servers on it’s server-side.</p>
-
-<p>NOTE: You should secure this virtual server such that it can-not be accessed by end-users, you can do this with AFM rules, or by using a non-routable destination address.</p>
-
-<div class="highlight"><pre><code class="language-text" data-lang="text">ltm virtual /Common/sitefoo.bar.com-server-side-vip {
-    destination /Common/10.1.50.160:8443
-    ip-protocol tcp
-    mask 255.255.255.255
-    pool /Common/sitefoo.bar.com-server-pool
-    profiles {
-        /Common/http { }
-        /Common/serverssl-insecure-compatible {
-            context serverside
-        }
-        /Common/tcp { }
-    }
-    source 0.0.0.0/0
-    source-address-translation {
-        type automap
-    }
-    translate-address enabled
-    translate-port enabled
-}</code></pre></div>
-
-<p>Next let’s create an irule that targets the server-side vip from the client-side vip:</p>
-
-<div class="highlight"><pre><code class="language-text" data-lang="text">ltm rule /Common/sitefoo.bar.com-vip-target-vip-ir {
-    when HTTP_REQUEST {
-    virtual sitefoo.bar.com-server-side-vip
-}
-}</code></pre></div>
-
-<p>Finally, create a client-side VIP.  This VIP has a clientssl on the client-side of the proxy that terminates ssl, the clone-pool on the server-side of the proxy and finally the iRule that tells heh F5 to send traffic to the other virtual server.  Notably it does not have a default pool.</p>
-
-<div class="highlight"><pre><code class="language-text" data-lang="text">ltm virtual /Common/sitefoo.bar.com-client-side-vip {
-    clone-pools {
-        /Common/sitefoo.bar.com-clone-pool {
-            context serverside
-        }
-    }
-    destination /Common/10.1.50.160:443
-    ip-protocol tcp
-    mask 255.255.255.255
-    profiles {
-        /Common/clientssl {
-            context clientside
-        }
-        /Common/http { }
-        /Common/tcp { }
-    }
-    rules {
-        /Common/sitefoo.bar.com-vip-target-vip-ir
-    }
-    source 0.0.0.0/0
-    translate-address enabled
-    translate-port enabled
 }</code></pre></div>
 
 
@@ -276,7 +232,34 @@ ltm pool /Common/sitefoo.bar.com-server-pool {
     
       <li>
         <h3>
+          <a href="/f5/ltm/afm/2018/06/04/Source-MAC-based-routing/">
+            Source MAC based routing
+            <small><time datetime="2018-06-04T06:54:25-04:00">04 Jun 2018</time></small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
           <a href="/f5/ltm/2015/07/09/f5-status-page/">
+            Server status pages for F5 monitoring
+            <small><time datetime="2015-07-09T06:54:25-04:00">09 Jul 2015</time></small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/f5/ltm/afm/2015/07/09/f5-forwarding-vips/">
+            Forwarding VIPs
+            <small><time datetime="2015-07-09T06:54:25-04:00">09 Jul 2015</time></small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/f5/ltm/apm/2015/07/09/f5-exchange-o365-hybrid/">
             Server status pages for F5 monitoring
             <small><time datetime="2015-07-09T06:54:25-04:00">09 Jul 2015</time></small>
           </a>
@@ -288,24 +271,6 @@ ltm pool /Common/sitefoo.bar.com-server-pool {
           <a href="/f5/ltm/2015/07/08/ssl-bridging-and-clone-pool/">
             LTM clone pools & SSL Bridging
             <small><time datetime="2015-07-08T06:54:25-04:00">08 Jul 2015</time></small>
-          </a>
-        </h3>
-      </li>
-    
-      <li>
-        <h3>
-          <a href="/f5/gtm/2014/12/23/GTM-Translation-addresses-for-Generic-Host-objects/">
-            GTM Translation addresses for Generic Host objects
-            <small><time datetime="2014-12-23T12:54:25-05:00">23 Dec 2014</time></small>
-          </a>
-        </h3>
-      </li>
-    
-      <li>
-        <h3>
-          <a href="/f5/gtm/2014/12/23/split-dns-with-gtm/">
-            Split DNS with GTM
-            <small><time datetime="2014-12-23T10:32:34-05:00">23 Dec 2014</time></small>
           </a>
         </h3>
       </li>

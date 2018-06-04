@@ -67,6 +67,16 @@
             
           
         
+          
+            
+            
+          
+        
+          
+            
+            
+          
+        
       </div>
     </nav>
 
@@ -110,7 +120,7 @@
   </li>
 </ul>
 
-<div class="highlight"><pre><code class="language-text" data-lang="text">gtm server /Common/GenericServer01 {
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>gtm server /Common/GenericServer01 {
     addresses {
         172.20.1.31 {
             device-name GenericServer01
@@ -157,7 +167,7 @@
 
 <p>The disadvantage of this configuration is that you’ll end up creating and maintaining a lot of very specific GTM monitors with address aliases for all of your NATed generic objects.</p>
 
-<div class="highlight"><pre><code class="language-text" data-lang="text">gtm monitor tcp-half-open /Common/GenericServer01-tcp-half-open {
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>gtm monitor tcp-half-open /Common/GenericServer01-tcp-half-open {
     defaults-from /Common/tcp_half_open
     destination 172.20.1.31:80
     interval 30
