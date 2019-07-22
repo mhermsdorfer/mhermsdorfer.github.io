@@ -12,6 +12,22 @@ I strongly advocate that administrators simply hand out external public IP addre
 
 If however, hairpin nat is not an option for you, continue on.  [F5's Achieving split DNS behavior through BIG-IP GTM wide IPs](https://support.f5.com/csp/article/K14421) walks you though the steps to configure split dns on GTM.  However it lacks configuration examples, this post is intended to clarify configurations where needed and to provide some example configuration snippets.
 
+# Overview
+
+This is fairly well covered in:  [F5's Achieving split DNS behavior through BIG-IP GTM wide IPs](https://support.f5.com/csp/article/K14421)  But, I wanted to give a quick overview of what we're going to do:
+1. Create virtual-servers:
+    * Internal virtual-server with an address but no translation address.
+    * External virtual-server with public address set as "address" and private address set as translation address.
+2. Create Pools:
+    * Internal Pool that contains the internal virtual servers.
+    * External Pool that contains the external virtual servers.
+3. Create WideIP:
+    * Topology based load balancing at WIP level.
+    * Add both internal and external pools to WIP.
+4. Create and/or Update Toplogy Records/Regions.
+    * If regions already exist, remember to add internal pool to internal region and external pool to external region.
+    * if regions & topology records don't exist, they must be created, see below.
+
 # Create Virtual Server objects using Translation fields in virtual server objects
 
 [F5's Configuring BIG-IP GTM server objects for BIG-IP devices that reside behind a firewall NAT](https://support.f5.com/csp/article/K14707) covers this fairly well.
