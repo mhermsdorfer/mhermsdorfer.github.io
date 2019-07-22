@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Split DNS with GTM"
-date:   2014-12-23 15:32:34
+date:   2019-07-22 13:32:34
 categories: F5 GTM
 ---
 
@@ -10,15 +10,15 @@ NAT adds complexity to everything, I avoid it whenever possible, however it's a 
 # Avoid Split DNS when possible
 I strongly advocate that administrators simply hand out external public IP addresses for anything that is externally accessible.  This allows you to avoid the entire problem space around split DNS and the additional configuration overhead and complexity it brings to your environment.  Many will argue about the inefficiency of configurations that use [Hairpin nat](http://tools.ietf.org/html/rfc4787#section-6), the arguments typically revolve around hairpinning putting additional load on the NAT device & causing inefficient traffic flows on the network.  However, if there are capacity concerns about the NAT device, then what's the expectation for when a syn-flood or other DOS attack hits the nat box from the Internet?  Additionally, complexity is every IT operations worst enemy, if you can reduce configuration complexity at the cost of a bigger firewall that's a huge win.  Firewalls are cheap compared to outages and additional labor overhead caused by complexity.
 
-If however, hairpin nat is not an option for you, continue on.  [F5's Achieving split DNS behavior through BIG-IP GTM wide IPs](https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html) walks you though the steps to configure split dns on GTM.  However it lacks configuration examples, this post is intended to clarify configurations where needed and to provide some example configuration snippets.
+If however, hairpin nat is not an option for you, continue on.  [F5's Achieving split DNS behavior through BIG-IP GTM wide IPs](https://support.f5.com/csp/article/K14421) walks you though the steps to configure split dns on GTM.  However it lacks configuration examples, this post is intended to clarify configurations where needed and to provide some example configuration snippets.
 
 # Create Virtual Server objects using Translation fields in virtual server objects
 
-[F5's Configuring BIG-IP GTM server objects for BIG-IP devices that reside behind a firewall NAT](https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html) covers this fairly well.
+[F5's Configuring BIG-IP GTM server objects for BIG-IP devices that reside behind a firewall NAT](https://support.f5.com/csp/article/K14707) covers this fairly well.
 
 The first step is to create the virtual server objects for our application using translation fields.  As you can see below we create two virtual server objects, one for internal (with no translation-address) and one for external (with a translation address).
 
-Finally, note that once you use a translation-address on a big-ip server object, virtual-server discovery is automatically disabled and no longer functions.  iQuery is still used for virtual server monitoring, but you'll need to manually add the virtual server objects to GTM server objects from now on out.  You can read about this limitation here: [K14707: Configuring BIG-IP DNS server objects for BIG-IP devices that reside behind a firewall NAT](https://support.f5.com/csp/article/K14707)
+Finally, note that once you use a translation-address on a big-ip server object, virtual-server discovery is automatically disabled and no longer functions.  iQuery is still used for virtual server monitoring, but you'll need to manually add the virtual server objects to GTM server objects from now on out.  You can read about this limitation here: [https://support.f5.com/csp/article/K9138](https://support.f5.com/csp/article/K9138)
 
 Example configuration:
 {% highlight text %}
