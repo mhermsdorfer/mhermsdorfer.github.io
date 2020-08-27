@@ -40,9 +40,20 @@ permalink: pretty
 
 #gems:
 #    - jekyll-sitemap
-
+gems:
+  - jekyll-paginate
 paginate: 2
 
 sass:
   sass_dir:          _sass
   style:            :compressed
+
+
+#Serving
+  detach              : false
+  port                : 4000
+  host                : 0.0.0.0
+  baseurl             : "" # does not include hostname
+  show_dir_listing    : false
+
+

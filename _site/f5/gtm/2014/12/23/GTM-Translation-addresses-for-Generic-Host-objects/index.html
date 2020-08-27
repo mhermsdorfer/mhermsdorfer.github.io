@@ -95,11 +95,11 @@
 
 <p>This can be frustrating, the user experience for this configuration is honestly pretty awful in the F5 web interface.  One would think that if translation addresses did nothing for non-iquery monitored server objects then the GUI &amp; configuration objects would not allow their configuration which only causes further confusion.</p>
 
-<p>For an overview of split DNS configuration on the GTM see: <a href="/f5/gtm/2014/12/23/split-dns-with-gtm/">Spit DNS with GTM</a></p>
+<p>For an overview of split DNS configuration on the GTM see: <a href="/f5/gtm/2019/07/22/split-dns-with-gtm/">Spit DNS with GTM</a></p>
 
 <h2 id="broken-configuration">Broken Configuration</h2>
 
-<p>The configuration below does not work as one might expect.  </p>
+<p>The configuration below does not work as one might expect.</p>
 
 <p>One likely expects the GTM to issue the following health monitors:</p>
 
@@ -115,7 +115,7 @@
   </li>
 </ul>
 
-<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>gtm server /Common/GenericServer01 {
+<figure class="highlight"><pre><code class="language-text" data-lang="text">gtm server /Common/GenericServer01 {
     addresses {
         172.20.1.31 {
             device-name GenericServer01
@@ -134,7 +134,7 @@
             monitor /Common/tcp_half_open
         }
     }
-}</code></pre></div>
+}</code></pre></figure>
 
 <p>However what actually happens is as follows:</p>
 
@@ -162,7 +162,7 @@
 
 <p>The disadvantage of this configuration is that you’ll end up creating and maintaining a lot of very specific GTM monitors with address aliases for all of your NATed generic objects.</p>
 
-<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>gtm monitor tcp-half-open /Common/GenericServer01-tcp-half-open {
+<figure class="highlight"><pre><code class="language-text" data-lang="text">gtm monitor tcp-half-open /Common/GenericServer01-tcp-half-open {
     defaults-from /Common/tcp_half_open
     destination 172.20.1.31:80
     interval 30
@@ -189,7 +189,7 @@ gtm server /Common/GenericServer01 {
             monitor /Common/tcp_half_open
         }
     }
-}</code></pre></div>
+}</code></pre></figure>
 
 <ul>
   <li>Note: Unfortunately, GTM monitors require a destination IP and port if a specific IP is used.  Ideally we could configure a monitor with a specific destination address and a wildcard port.</li>

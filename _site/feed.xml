@@ -2,12 +2,237 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Mark Hermsdorfer</title>
-    <description>Hi, I&#39;m Mark Hermsdorfer, an operations architect with a focus on networking and application delivery infrastructure.  I write about various topics including my time as an F5 Networks consultant.</description>
+    <description>Hi, I'm Mark Hermsdorfer, an operations architect with a focus on networking and application delivery infrastructure.  I write about various topics including my time as an F5 Networks consultant.</description>
     <link>http://blog.hermsdorfer.net/</link>
     <atom:link href="http://blog.hermsdorfer.net/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 04 Jun 2018 13:55:36 -0400</pubDate>
-    <lastBuildDate>Mon, 04 Jun 2018 13:55:36 -0400</lastBuildDate>
-    <generator>Jekyll v2.2.0</generator>
+    <pubDate>Thu, 27 Aug 2020 12:40:06 -0400</pubDate>
+    <lastBuildDate>Thu, 27 Aug 2020 12:40:06 -0400</lastBuildDate>
+    <generator>Jekyll v4.1.1</generator>
+    
+      <item>
+        <title>Force F5 to GARP</title>
+        <description>&lt;p&gt;To force the F5 BIG-IP to send GARP you can of course failover, this will issue a GARP for all floating addresses.  However, in some cases you may want to tell the BIG-IP to send GARP for non-floating self-ip addresses as well and/or GARP without forcing a failover.&lt;/p&gt;
+
+&lt;p&gt;The following set of commands are useful to force a GARP:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;tmsh create net vlan temp_garp_vlan
+tmsh create net self temp_garp_self address 192.0.2.254/32 vlan temp_garp_vlan
+tmsh delete net self temp_garp_self
+tmsh delete net vlan temp_garp_vlan&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It’s the act of deleting a the self IP that causes it to GARP out all other addresses.&lt;/p&gt;
+
+&lt;p&gt;The vlan &amp;amp; address itself is irrelevant, of course. Since the VLAN’s not tied to an interface, or on the hypervisor, no GARP for that specific IP should leave the box. I’d still pick something unrelated to the real networks though, so as not to cause a hiccup on traffic currently traversing the box.&lt;/p&gt;
+
+&lt;p&gt;Note, that this example uses 192.0.0.254/32, this is a reserved for documentation per &lt;a href=&quot;https://tools.ietf.org/html/rfc5737#section-3&quot;&gt;RFC5737&lt;/a&gt; so you can be reasonably sure it’s not in use.&lt;/p&gt;
+</description>
+        <pubDate>Thu, 27 Aug 2020 06:54:25 -0400</pubDate>
+        <link>http://blog.hermsdorfer.net/f5/ltm/2020/08/27/f5-send-garp-self-ip/</link>
+        <guid isPermaLink="true">http://blog.hermsdorfer.net/f5/ltm/2020/08/27/f5-send-garp-self-ip/</guid>
+        
+        
+        <category>F5</category>
+        
+        <category>LTM</category>
+        
+      </item>
+    
+      <item>
+        <title>Split DNS with GTM</title>
+        <description>&lt;p&gt;NAT adds complexity to everything, I avoid it whenever possible, however it’s a necessary evil of our IPv4 world.  A common configuration that needs to be addressed in GTM deployments is NAT and split DNS.  Often the GTM will need to respond to internal queries with a private IP address while external queries get a public IP address.  This is typically done inside GTM with topology records and possibly a combination of internal and external pools containing different virtual server objects.&lt;/p&gt;
+
+&lt;h1 id=&quot;avoid-split-dns-when-possible&quot;&gt;Avoid Split DNS when possible&lt;/h1&gt;
+&lt;p&gt;I strongly advocate that administrators simply hand out external public IP addresses for anything that is externally accessible.  This allows you to avoid the entire problem space around split DNS and the additional configuration overhead and complexity it brings to your environment.  Many will argue about the inefficiency of configurations that use &lt;a href=&quot;http://tools.ietf.org/html/rfc4787#section-6&quot;&gt;Hairpin nat&lt;/a&gt;, the arguments typically revolve around hairpinning putting additional load on the NAT device &amp;amp; causing inefficient traffic flows on the network.  However, if there are capacity concerns about the NAT device, then what’s the expectation for when a syn-flood or other DOS attack hits the nat box from the Internet?  Additionally, complexity is every IT operations worst enemy, if you can reduce configuration complexity at the cost of a bigger firewall that’s a huge win.  Firewalls are cheap compared to outages and additional labor overhead caused by complexity.&lt;/p&gt;
+
+&lt;p&gt;If however, hairpin nat is not an option for you, continue on.  &lt;a href=&quot;https://support.f5.com/csp/article/K14421&quot;&gt;F5’s Achieving split DNS behavior through BIG-IP GTM wide IPs&lt;/a&gt; walks you though the steps to configure split dns on GTM.  However it lacks configuration examples, this post is intended to clarify configurations where needed and to provide some example configuration snippets.&lt;/p&gt;
+
+&lt;h1 id=&quot;overview&quot;&gt;Overview&lt;/h1&gt;
+
+&lt;p&gt;This is fairly well covered in:  &lt;a href=&quot;https://support.f5.com/csp/article/K14421&quot;&gt;F5’s Achieving split DNS behavior through BIG-IP GTM wide IPs&lt;/a&gt;  But, I wanted to give a quick overview of what we’re going to do:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Create virtual-servers:
+    &lt;ul&gt;
+      &lt;li&gt;Internal virtual-server with an address but no translation address.&lt;/li&gt;
+      &lt;li&gt;External virtual-server with public address set as “address” and private address set as translation address.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Create Pools:
+    &lt;ul&gt;
+      &lt;li&gt;Internal Pool that contains the internal virtual servers.&lt;/li&gt;
+      &lt;li&gt;External Pool that contains the external virtual servers.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Create WideIP:
+    &lt;ul&gt;
+      &lt;li&gt;Topology based load balancing at WIP level.&lt;/li&gt;
+      &lt;li&gt;Add both internal and external pools to WIP.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Create and/or Update Toplogy Records/Regions.
+    &lt;ul&gt;
+      &lt;li&gt;If regions already exist, remember to add internal pool to internal region and external pool to external region.&lt;/li&gt;
+      &lt;li&gt;if regions &amp;amp; topology records don’t exist, they must be created, see below.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h1 id=&quot;create-virtual-server-objects-using-translation-fields-in-virtual-server-objects&quot;&gt;Create Virtual Server objects using Translation fields in virtual server objects&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://support.f5.com/csp/article/K14707&quot;&gt;F5’s Configuring BIG-IP GTM server objects for BIG-IP devices that reside behind a firewall NAT&lt;/a&gt; covers this fairly well.&lt;/p&gt;
+
+&lt;p&gt;The first step is to create the virtual server objects for our application using translation fields.  As you can see below we create two virtual server objects, one for internal (with no translation-address) and one for external (with a translation address).&lt;/p&gt;
+
+&lt;p&gt;Finally, note that once you use a translation-address on a big-ip server object, virtual-server discovery is automatically disabled and no longer functions.  iQuery is still used for virtual server monitoring, but you’ll need to manually add the virtual server objects to GTM server objects from now on out.  You can read about this limitation here: &lt;a href=&quot;https://support.f5.com/csp/article/K9138&quot;&gt;https://support.f5.com/csp/article/K9138&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Example configuration:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;gtm server bigip-1-dc-east {
+    addresses {
+        10.1.31.56 {
+            device-name bigip-1.dc-east.f5lab.net
+        }
+    }
+    datacenter dc-east
+    devices {
+        bigip-1.dc-east.f5lab.net {
+            addresses {
+                10.1.31.56 { }
+            }
+        }
+    }
+    monitor bigip 
+    product bigip
+    virtual-servers {
+        app1-bigip1-dc-east-external {
+            destination 192.0.2.101:443
+            translation-address 10.1.82.101
+            translation-port 443
+        }
+        app1-bigip1-dc-east-internal {
+            destination 10.1.82.101:443
+        }
+    }
+}
+gtm server bigip-1-dc-west {
+    addresses {
+        10.2.31.56 {
+            device-name bigip-1.dc-west .f5lab.net
+        }
+    }
+    datacenter dc-east
+    devices {
+        bigip-1.dc-west.f5lab.net {
+            addresses {
+                10.2.31.56 { }
+            }
+        }
+    }
+    monitor bigip 
+    product bigip
+    virtual-servers {
+        app1-bigip1-dc-west-external {
+            destination 198.51.100.101:443
+            translation-address 10.2.82.101
+            translation-port 443
+        }
+        app1-bigip1-dc-est-internal {
+            destination 10.2.82.101:443
+        }
+    }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1 id=&quot;pool-creation&quot;&gt;Pool Creation&lt;/h1&gt;
+
+&lt;p&gt;Next we create our pools, we need an internal pool that contains all the internal virtual server objects and an external pool that contains all the external virtual server objects.&lt;/p&gt;
+
+&lt;p&gt;Example configuration:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;gtm pool a app1.example.com-gtmpool-external {
+    load-balancing-mode least-connections
+    members {
+        bigip-1-dc-east:app1-bigip1-dc-east-external {
+            member-order 0
+        }
+        bigip-1-dc-west:app1-bigip1-dc-west-external {
+            member-order 1
+        }
+    }
+}
+gtm pool a app1.example.com-gtmpool-internal {
+    load-balancing-mode least-connections
+    members {
+        bigip-1-dc-east:app1-bigip1-dc-east-internal {
+            member-order 0
+        }
+        bigip-1-dc-west:app1-bigip1-dc-west-internal {
+            member-order 1
+        }
+    }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1 id=&quot;wide-ip-configuration&quot;&gt;Wide IP Configuration&lt;/h1&gt;
+
+&lt;p&gt;The next step is to create a pool that uses topology based load balancing and uses both our internal and external pools.&lt;/p&gt;
+
+&lt;p&gt;Example configuration:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;gtm wideip a app1.example.com {
+    pool-lb-mode topology
+    pools {
+        app1.example.com-gtmpool-external {
+            order 0
+        }
+        app1.example.com-gtmpool-internal {
+            order 1
+        }
+    }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1 id=&quot;topology-records&quot;&gt;Topology Records&lt;/h1&gt;
+
+&lt;p&gt;The final step is to create GTM Topology Regions and Records.  This is where we tell GTM how to perform the topology based load balancing we set on our Wide IP object.  Otherwise the GTM wouldn’t know which pool should be used for which clients.  The regions help us group like things together so that we can limit the number of topology records we need to create.  In this case, we’ll have two regions, one external that contains all non-RFC1918 IP addresses and our external pool.  The other region will be “Internal” which will contain all of our internal RFC1918 address space plus the internal pool.&lt;/p&gt;
+
+&lt;p&gt;As you add more applications, you will need to remember to add the internal pool to the internal topology region and the external pool to the external topology region.&lt;/p&gt;
+
+&lt;p&gt;Example configuration:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;gtm region external-region {
+    region-members {
+        not subnet 10.0.0.0/8 { }
+        not subnet 172.16.0.0/12 { }
+        not subnet 192.168.0.0/16 { }
+        pool /Common/app1.example.com-gtmpool-external { }
+        subnet 0.0.0.0/0 { }
+    }
+}
+gtm region internal-region {
+    region-members {
+        pool /Common/app1.example.com-gtmpool-internal { }
+        subnet 10.0.0.0/8 { }
+        subnet 172.16.0.0/12 { }
+        subnet 192.168.0.0/16 { }
+    }
+}
+gtm topology ldns: region /Common/external-region server: region /Common/external-region {
+    order 1
+    score 500
+}
+gtm topology ldns: region /Common/internal-region server: region /Common/internal-region {
+    order 2
+    score 500
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+</description>
+        <pubDate>Mon, 22 Jul 2019 09:32:34 -0400</pubDate>
+        <link>http://blog.hermsdorfer.net/f5/gtm/2019/07/22/split-dns-with-gtm/</link>
+        <guid isPermaLink="true">http://blog.hermsdorfer.net/f5/gtm/2019/07/22/split-dns-with-gtm/</guid>
+        
+        
+        <category>F5</category>
+        
+        <category>GTM</category>
+        
+      </item>
     
       <item>
         <title>Source MAC based routing</title>
@@ -62,11 +287,11 @@
         <guid isPermaLink="true">http://blog.hermsdorfer.net/f5/ltm/afm/2018/06/04/Source-MAC-based-routing/</guid>
         
         
-        <category>f5</category>
+        <category>F5</category>
         
-        <category>ltm</category>
+        <category>LTM</category>
         
-        <category>afm</category>
+        <category>AFM</category>
         
       </item>
     
@@ -86,44 +311,44 @@
 
 &lt;p&gt;Here is an example static status page I’ve used previously.  There is nothing complex, it includes some details so operators can see their various status options.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;html&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;lang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;en&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;head&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;meta&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;http-equiv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;content-type&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;text/html; charset=UTF-8&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; Application Status Page &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;head&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;h1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; Application Status Page &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;h1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;h1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; status=up &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;h1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;lang=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;en&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;meta&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;http-equiv=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;content-type&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;content=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;text/html; charset=UTF-8&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt; Application Status Page &lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;h1&amp;gt;&lt;/span&gt; Application Status Page &lt;span class=&quot;nt&quot;&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;h1&amp;gt;&lt;/span&gt; status=up &lt;span class=&quot;nt&quot;&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
 
-    &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; Modify the current server status on header above, leaving no space between status= and expected status.  The server status can be set to various options as follows:
-    &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;ul&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;li&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; up or online:     Server is normal and eligible for all traffic. &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;li&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;li&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; quiesce or drain: Server is going offline and eligible only for existing sessions. &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;li&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;li&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; down or offline:  Server is down and not eligible any traffic. &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;li&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;ul&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;html&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;p&amp;gt;&lt;/span&gt; Modify the current server status on header above, leaving no space between status= and expected status.  The server status can be set to various options as follows:
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;ul&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&amp;gt;&lt;/span&gt; up or online:     Server is normal and eligible for all traffic. &lt;span class=&quot;nt&quot;&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&amp;gt;&lt;/span&gt; quiesce or drain: Server is going offline and eligible only for existing sessions. &lt;span class=&quot;nt&quot;&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&amp;gt;&lt;/span&gt; down or offline:  Server is down and not eligible any traffic. &lt;span class=&quot;nt&quot;&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/ul&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Here is an example HTTP status monitor on the F5 that works with the above status page.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;&lt;/span&gt;ltm monitor http /Common/status-http-monitor {
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;ltm monitor http /Common/status-http-monitor {
     adaptive disabled
     defaults-from /Common/http
     destination *:*
     interval 5
     ip-dscp 0
-    recv &amp;quot;status=(up|online)&amp;quot;
-    recv-disable &amp;quot;status=(quiesce|disabled|drain)&amp;quot;
-    send &amp;quot;GET /status.html HTTP/1.1\\r\\nHost: status.com\\r\\nConnection: close\\r\\n\\r\\n&amp;quot;
+    recv &quot;status=(up|online)&quot;
+    recv-disable &quot;status=(quiesce|disabled|drain)&quot;
+    send &quot;GET /status.html HTTP/1.1\\r\\nHost: status.com\\r\\nConnection: close\\r\\n\\r\\n&quot;
     time-until-up 0
     timeout 16
-}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;The same monitor as above, except this one is for HTTPS.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;&lt;/span&gt;ltm monitor https /Common/status-https-monitor {
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;ltm monitor https /Common/status-https-monitor {
     adaptive disabled
     cipherlist DEFAULT:+SHA:+3DES:+kEDH
     compatibility enabled
@@ -131,12 +356,12 @@
     destination *:*
     interval 5
     ip-dscp 0
-    recv &amp;quot;status=(up|online)&amp;quot;
-    recv-disable &amp;quot;status=(quiesce|disabled|drain)&amp;quot;
-    send &amp;quot;GET /status.html HTTP/1.1\\\\r\\\\nHost: status.com\\\\r\\\\nConnection: close\\\\r\\\\n\\\\r\\\\n&amp;quot;
+    recv &quot;status=(up|online)&quot;
+    recv-disable &quot;status=(quiesce|disabled|drain)&quot;
+    send &quot;GET /status.html HTTP/1.1\\\\r\\\\nHost: status.com\\\\r\\\\nConnection: close\\\\r\\\\n\\\\r\\\\n&quot;
     time-until-up 0
     timeout 16
-}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 </description>
         <pubDate>Thu, 09 Jul 2015 06:54:25 -0400</pubDate>
@@ -144,9 +369,9 @@
         <guid isPermaLink="true">http://blog.hermsdorfer.net/f5/ltm/2015/07/09/f5-status-page/</guid>
         
         
-        <category>f5</category>
+        <category>F5</category>
         
-        <category>ltm</category>
+        <category>LTM</category>
         
       </item>
     
@@ -166,7 +391,7 @@
 
 &lt;p&gt;First create pools, one for the server-side traffic, the other for our IDS system that we’ll clone traffic to:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;&lt;/span&gt;ltm pool /Common/sitefoo.bar.com-clone-pool {
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;ltm pool /Common/sitefoo.bar.com-clone-pool {
     members {
         /Common/ids-system:12345 {
             address 10.2.200.200
@@ -181,13 +406,13 @@ ltm pool /Common/sitefoo.bar.com-server-pool {
         }
     }
     monitor /Common/tcp_half_open
-}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Next let’s create a server-side VIP.  This VIP will use a pool with the back-end web servers, and will have server-ssl but no client-ssl.  It will accept clear text http on it’s client-side and send ssl encrypted http to the servers on it’s server-side.&lt;/p&gt;
 
 &lt;p&gt;NOTE: You should secure this virtual server such that it can-not be accessed by end-users, you can do this with AFM rules, or by using a non-routable destination address.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;&lt;/span&gt;ltm virtual /Common/sitefoo.bar.com-server-side-vip {
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;ltm virtual /Common/sitefoo.bar.com-server-side-vip {
     destination /Common/10.1.50.160:8443
     ip-protocol tcp
     mask 255.255.255.255
@@ -205,19 +430,19 @@ ltm pool /Common/sitefoo.bar.com-server-pool {
     }
     translate-address enabled
     translate-port enabled
-}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Next let’s create an irule that targets the server-side vip from the client-side vip:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;&lt;/span&gt;ltm rule /Common/sitefoo.bar.com-vip-target-vip-ir {
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;ltm rule /Common/sitefoo.bar.com-vip-target-vip-ir {
     when HTTP_REQUEST {
     virtual sitefoo.bar.com-server-side-vip
 }
-}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Finally, create a client-side VIP.  This VIP has a clientssl on the client-side of the proxy that terminates ssl, the clone-pool on the server-side of the proxy and finally the iRule that tells heh F5 to send traffic to the other virtual server.  Notably it does not have a default pool.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;&lt;/span&gt;ltm virtual /Common/sitefoo.bar.com-client-side-vip {
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;ltm virtual /Common/sitefoo.bar.com-client-side-vip {
     clone-pools {
         /Common/sitefoo.bar.com-clone-pool {
             context serverside
@@ -239,7 +464,7 @@ ltm pool /Common/sitefoo.bar.com-server-pool {
     source 0.0.0.0/0
     translate-address enabled
     translate-port enabled
-}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 </description>
         <pubDate>Wed, 08 Jul 2015 06:54:25 -0400</pubDate>
@@ -247,9 +472,9 @@ ltm pool /Common/sitefoo.bar.com-server-pool {
         <guid isPermaLink="true">http://blog.hermsdorfer.net/f5/ltm/2015/07/08/ssl-bridging-and-clone-pool/</guid>
         
         
-        <category>f5</category>
+        <category>F5</category>
         
-        <category>ltm</category>
+        <category>LTM</category>
         
       </item>
     
@@ -259,11 +484,11 @@ ltm pool /Common/sitefoo.bar.com-server-pool {
 
 &lt;p&gt;This can be frustrating, the user experience for this configuration is honestly pretty awful in the F5 web interface.  One would think that if translation addresses did nothing for non-iquery monitored server objects then the GUI &amp;amp; configuration objects would not allow their configuration which only causes further confusion.&lt;/p&gt;
 
-&lt;p&gt;For an overview of split DNS configuration on the GTM see: &lt;a href=&quot;/f5/gtm/2014/12/23/split-dns-with-gtm/&quot;&gt;Spit DNS with GTM&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;For an overview of split DNS configuration on the GTM see: &lt;a href=&quot;/f5/gtm/2019/07/22/split-dns-with-gtm/&quot;&gt;Spit DNS with GTM&lt;/a&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;broken-configuration&quot;&gt;Broken Configuration&lt;/h2&gt;
 
-&lt;p&gt;The configuration below does not work as one might expect.  &lt;/p&gt;
+&lt;p&gt;The configuration below does not work as one might expect.&lt;/p&gt;
 
 &lt;p&gt;One likely expects the GTM to issue the following health monitors:&lt;/p&gt;
 
@@ -279,7 +504,7 @@ ltm pool /Common/sitefoo.bar.com-server-pool {
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;&lt;/span&gt;gtm server /Common/GenericServer01 {
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;gtm server /Common/GenericServer01 {
     addresses {
         172.20.1.31 {
             device-name GenericServer01
@@ -298,7 +523,7 @@ ltm pool /Common/sitefoo.bar.com-server-pool {
             monitor /Common/tcp_half_open
         }
     }
-}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;However what actually happens is as follows:&lt;/p&gt;
 
@@ -326,7 +551,7 @@ ltm pool /Common/sitefoo.bar.com-server-pool {
 
 &lt;p&gt;The disadvantage of this configuration is that you’ll end up creating and maintaining a lot of very specific GTM monitors with address aliases for all of your NATed generic objects.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;&lt;/span&gt;gtm monitor tcp-half-open /Common/GenericServer01-tcp-half-open {
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;gtm monitor tcp-half-open /Common/GenericServer01-tcp-half-open {
     defaults-from /Common/tcp_half_open
     destination 172.20.1.31:80
     interval 30
@@ -353,7 +578,7 @@ gtm server /Common/GenericServer01 {
             monitor /Common/tcp_half_open
         }
     }
-}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Note: Unfortunately, GTM monitors require a destination IP and port if a specific IP is used.  Ideally we could configure a monitor with a specific destination address and a wildcard port.&lt;/li&gt;
@@ -365,42 +590,9 @@ gtm server /Common/GenericServer01 {
         <guid isPermaLink="true">http://blog.hermsdorfer.net/f5/gtm/2014/12/23/GTM-Translation-addresses-for-Generic-Host-objects/</guid>
         
         
-        <category>f5</category>
+        <category>F5</category>
         
-        <category>gtm</category>
-        
-      </item>
-    
-      <item>
-        <title>Split DNS with GTM</title>
-        <description>&lt;p&gt;NAT adds complexity to everything, I avoid it whenever possible, however it’s a necessary evil of our IPv4 world.  A common configuration that needs to be addressed in GTM deployments is NAT and split DNS.  Often the GTM will need to respond to internal queries with a private IP address while external queries get a public IP address.  This is typically done inside GTM with topology records and possibly a combination of internal and external pools containing different virtual server objects.&lt;/p&gt;
-
-&lt;h1 id=&quot;avoid-split-dns-when-possible&quot;&gt;Avoid Split DNS when possible&lt;/h1&gt;
-&lt;p&gt;I strongly advocate that administrators simply hand out external public IP addresses for anything that is externally accessible.  This allows you to avoid the entire problem space around split DNS and the additional configuration overhead and complexity it brings to your environment.  Many will argue about the inefficiency of configurations that use &lt;a href=&quot;http://tools.ietf.org/html/rfc4787#section-6&quot;&gt;Hairpin nat&lt;/a&gt;, the arguments typically revolve around hairpinning putting additional load on the NAT device &amp;amp; causing inefficient traffic flows on the network.  However, if there are capacity concerns about the NAT device, then what’s the expectation for when a syn-flood or other DOS attack hits the nat box from the Internet?  Additionally, complexity is every IT operations worst enemy, if you can reduce configuration complexity at the cost of a bigger firewall that’s a huge win.  Firewalls are cheap compared to outages and additional labor overhead caused by complexity.&lt;/p&gt;
-
-&lt;p&gt;If however, hairpin nat is not an option for you, continue on.  &lt;a href=&quot;https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html&quot;&gt;F5’s Achieving split DNS behavior through BIG-IP GTM wide IPs&lt;/a&gt; walks you though the steps to configure split dns on GTM.  However it lacks configuration examples, this post is intended to clarify configurations where needed and to provide some example configuration snippets.&lt;/p&gt;
-
-&lt;h1 id=&quot;sorry-work-in-progress&quot;&gt;Sorry work in progress…&lt;/h1&gt;
-
-&lt;h1 id=&quot;using-translation-fields-in-virtual-server-objects&quot;&gt;Using Translation fields in virtual server objects&lt;/h1&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://support.f5.com/kb/en-us/solutions/public/14000/700/sol14707.html&quot;&gt;F5’s Configuring BIG-IP GTM server objects for BIG-IP devices that reside behind a firewall NAT&lt;/a&gt; covers this fairly well.&lt;/p&gt;
-
-&lt;h1 id=&quot;pool-creation&quot;&gt;Pool Creation&lt;/h1&gt;
-
-&lt;h1 id=&quot;topology-records&quot;&gt;Topology Records&lt;/h1&gt;
-
-&lt;h1 id=&quot;gluing-it-all-together&quot;&gt;Gluing it all together&lt;/h1&gt;
-
-</description>
-        <pubDate>Tue, 23 Dec 2014 10:32:34 -0500</pubDate>
-        <link>http://blog.hermsdorfer.net/f5/gtm/2014/12/23/split-dns-with-gtm/</link>
-        <guid isPermaLink="true">http://blog.hermsdorfer.net/f5/gtm/2014/12/23/split-dns-with-gtm/</guid>
-        
-        
-        <category>f5</category>
-        
-        <category>gtm</category>
+        <category>GTM</category>
         
       </item>
     
