@@ -5,24 +5,24 @@
     <description>Hi, I'm Mark Hermsdorfer, an operations architect with a focus on networking and application delivery infrastructure.  I write about various topics including my time as an F5 Networks consultant.</description>
     <link>http://blog.hermsdorfer.net/</link>
     <atom:link href="http://blog.hermsdorfer.net/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 27 Aug 2020 12:40:06 -0400</pubDate>
-    <lastBuildDate>Thu, 27 Aug 2020 12:40:06 -0400</lastBuildDate>
+    <pubDate>Thu, 27 Aug 2020 13:25:48 -0400</pubDate>
+    <lastBuildDate>Thu, 27 Aug 2020 13:25:48 -0400</lastBuildDate>
     <generator>Jekyll v4.1.1</generator>
     
       <item>
-        <title>Force F5 to GARP</title>
-        <description>&lt;p&gt;To force the F5 BIG-IP to send GARP you can of course failover, this will issue a GARP for all floating addresses.  However, in some cases you may want to tell the BIG-IP to send GARP for non-floating self-ip addresses as well and/or GARP without forcing a failover.&lt;/p&gt;
+        <title>Force F5 to send Gratuitous ARP</title>
+        <description>&lt;p&gt;To force the F5 BIG-IP to send Gratuitous ARP (GARP) you can of course failover, this will issue a GARP frame for all floating addresses.  However, in some cases you may want to tell the BIG-IP to send GARPs for non-floating self-ip addresses as well and/or force a Gratuitous ARP without needing to perform a failover.&lt;/p&gt;
 
-&lt;p&gt;The following set of commands are useful to force a GARP:&lt;/p&gt;
+&lt;p&gt;The following set of commands are useful to force a Gratuitous ARP/GARP for all IPs:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;tmsh create net vlan temp_garp_vlan
 tmsh create net self temp_garp_self address 192.0.2.254/32 vlan temp_garp_vlan
 tmsh delete net self temp_garp_self
 tmsh delete net vlan temp_garp_vlan&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;It’s the act of deleting a the self IP that causes it to GARP out all other addresses.&lt;/p&gt;
+&lt;p&gt;Interestingly, It’s the act of deleting any Self IP that causes the BIG-IP to GARP out all other addresses.&lt;/p&gt;
 
-&lt;p&gt;The vlan &amp;amp; address itself is irrelevant, of course. Since the VLAN’s not tied to an interface, or on the hypervisor, no GARP for that specific IP should leave the box. I’d still pick something unrelated to the real networks though, so as not to cause a hiccup on traffic currently traversing the box.&lt;/p&gt;
+&lt;p&gt;The vlan &amp;amp; address itself are irrelevant, of course. Since the VLAN’s not tied to an interface, or on the hypervisor, no GARP for that specific IP should leave the box. I’d still pick something unrelated to the real networks though, so as not to cause a hiccup on traffic currently traversing the box.&lt;/p&gt;
 
 &lt;p&gt;Note, that this example uses 192.0.0.254/32, this is a reserved for documentation per &lt;a href=&quot;https://tools.ietf.org/html/rfc5737#section-3&quot;&gt;RFC5737&lt;/a&gt; so you can be reasonably sure it’s not in use.&lt;/p&gt;
 </description>

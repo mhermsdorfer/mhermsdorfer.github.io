@@ -88,24 +88,24 @@
   <article class="post">
     <h1 class="post-title">
       <a href="/f5/ltm/2020/08/27/f5-send-garp-self-ip/">
-        Force F5 to GARP
+        Force F5 to send Gratuitous ARP
       </a>
     </h1>
 
     <time datetime="2020-08-27T06:54:25-04:00" class="post-date">27 Aug 2020</time>
 
-    <p>To force the F5 BIG-IP to send GARP you can of course failover, this will issue a GARP for all floating addresses.  However, in some cases you may want to tell the BIG-IP to send GARP for non-floating self-ip addresses as well and/or GARP without forcing a failover.</p>
+    <p>To force the F5 BIG-IP to send Gratuitous ARP (GARP) you can of course failover, this will issue a GARP frame for all floating addresses.  However, in some cases you may want to tell the BIG-IP to send GARPs for non-floating self-ip addresses as well and/or force a Gratuitous ARP without needing to perform a failover.</p>
 
-<p>The following set of commands are useful to force a GARP:</p>
+<p>The following set of commands are useful to force a Gratuitous ARP/GARP for all IPs:</p>
 
 <figure class="highlight"><pre><code class="language-text" data-lang="text">tmsh create net vlan temp_garp_vlan
 tmsh create net self temp_garp_self address 192.0.2.254/32 vlan temp_garp_vlan
 tmsh delete net self temp_garp_self
 tmsh delete net vlan temp_garp_vlan</code></pre></figure>
 
-<p>It’s the act of deleting a the self IP that causes it to GARP out all other addresses.</p>
+<p>Interestingly, It’s the act of deleting any Self IP that causes the BIG-IP to GARP out all other addresses.</p>
 
-<p>The vlan &amp; address itself is irrelevant, of course. Since the VLAN’s not tied to an interface, or on the hypervisor, no GARP for that specific IP should leave the box. I’d still pick something unrelated to the real networks though, so as not to cause a hiccup on traffic currently traversing the box.</p>
+<p>The vlan &amp; address itself are irrelevant, of course. Since the VLAN’s not tied to an interface, or on the hypervisor, no GARP for that specific IP should leave the box. I’d still pick something unrelated to the real networks though, so as not to cause a hiccup on traffic currently traversing the box.</p>
 
 <p>Note, that this example uses 192.0.0.254/32, this is a reserved for documentation per <a href="https://tools.ietf.org/html/rfc5737#section-3">RFC5737</a> so you can be reasonably sure it’s not in use.</p>
 
@@ -324,7 +324,7 @@ gtm topology ldns: region /Common/internal-region server: region /Common/interna
       <li>
         <h3>
           <a href="/f5/ltm/2020/08/27/f5-send-garp-self-ip/">
-            Force F5 to GARP
+            Force F5 to send Gratuitous ARP
             <small><time datetime="2020-08-27T06:54:25-04:00">27 Aug 2020</time></small>
           </a>
         </h3>
