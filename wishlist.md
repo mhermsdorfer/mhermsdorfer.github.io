@@ -4,6 +4,7 @@
 * [AppleTV 4k w/Ethernet](https://www.apple.com/shop/buy-tv/apple-tv-4k/128gb)
 * [Apple HomePod](https://www.apple.com/shop/buy-homepod/homepod)
 * [Tom Bihn Maker's Bag](https://www.tombihn.com/products/the-makers-bag?variant=44593161765053)
+* [Radiacode 103](https://www.radiacode.com/products#!/Detector-of-nuclear-radiation-and-spectrometer-Radiacode-103/p/602724693)
 * Ham Radio
     * [FlexRadio Maestro](https://www.flexradio.com/products/maestro-control-console-flex-6000/)
     * [FlexRadio Tuner Genius XL S02R](https://www.flexradio.com/products/tuner-genius-xl/?sku=TGXL-SO)
