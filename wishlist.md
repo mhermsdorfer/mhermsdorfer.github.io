@@ -17,6 +17,7 @@
     * [Grand Seiko SBGY007](https://www.grand-seiko.com/us-en/collections/sbgy007g)
     * [Grand Seiko SBGY035](https://www.grand-seiko.com/us-en/collections/sbgy035g)
 * Pipes
+    * [Northern Briars Bent Bulldog Spigot](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-spigot-bent-bulldog-98)
     * [Peter Klein Chubby Billiard](https://pipes2smoke.com/collections/estates/products/peter-klein-chubby-unsmoked-dk-3)
     * [Norther Briars Cavalier](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-cavalier-99)
     * [Norther Briars Bulldog](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-long-shank-bulldog-46)
