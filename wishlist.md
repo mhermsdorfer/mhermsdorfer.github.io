@@ -1,5 +1,8 @@
 # Wishlist
 
+## Amazon Wishlists
+* [Random Stuff](https://www.amazon.com/hz/wishlist/ls/Q2MC4K5X229B?ref_=wl_share)
+
 ## Non-Amazon Wishlist
 * [AppleTV 4k w/Ethernet](https://www.apple.com/shop/buy-tv/apple-tv-4k/128gb)
 * [Apple HomePod](https://www.apple.com/shop/buy-homepod/homepod)
@@ -17,11 +20,9 @@
     * [Grand Seiko SBGY007](https://www.grand-seiko.com/us-en/collections/sbgy007g)
     * [Grand Seiko SBGY035](https://www.grand-seiko.com/us-en/collections/sbgy035g)
 * Pipes
+    * [Tom Eltang Rusticated Poker](https://www.smokingpipes.com/pipes/new/eltang/moreinfo.cfm?product_id=634198)
     * [Northern Briars Bent Bulldog Spigot](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-spigot-bent-bulldog-98)
     * [Peter Klein Chubby Billiard](https://pipes2smoke.com/collections/estates/products/peter-klein-chubby-unsmoked-dk-3)
     * [Norther Briars Cavalier](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-cavalier-99)
     * [Norther Briars Bulldog](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-long-shank-bulldog-46)
     * [Upshall P](https://www.pulverspriorbriar.com/english/upshall-p-101-9737)
-
-## Amazon Wishlists
-* [Random Stuff](https://www.amazon.com/hz/wishlist/ls/Q2MC4K5X229B?ref_=wl_share)
