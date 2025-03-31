@@ -4,10 +4,7 @@
 * [Random Stuff](https://www.amazon.com/hz/wishlist/ls/Q2MC4K5X229B?ref_=wl_share)
 
 ## Non-Amazon Wishlist
-* [AppleTV 4k w/Ethernet](https://www.apple.com/shop/buy-tv/apple-tv-4k/128gb)
-* [Apple HomePod](https://www.apple.com/shop/buy-homepod/homepod)
-* [tom Bihn Pilot Bag](https://www.tombihn.com/products/pilot?variant=44621844545725)
-* [Radiacode 103](https://www.radiacode.com/products#!/Detector-of-nuclear-radiation-and-spectrometer-Radiacode-103/p/602724693)
+* [tom Bihn Co-Pilot Bag](https://www.tombihn.com/products/co-pilot?variant=44901684019389)  Ideally in 420 Spectron.
 * Ham Radio
     * [FlexRadio Maestro](https://www.flexradio.com/products/maestro-control-console-flex-6000/)
     * [FlexRadio Tuner Genius XL S02R](https://www.flexradio.com/products/tuner-genius-xl/?sku=TGXL-SO)
@@ -22,7 +19,6 @@
 * Pipes
     * [Tom Eltang Rusticated Poker](https://www.smokingpipes.com/pipes/new/eltang/moreinfo.cfm?product_id=634198)
     * [Northern Briars Bent Bulldog Spigot](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-spigot-bent-bulldog-98)
-    * [Peter Klein Chubby Billiard](https://pipes2smoke.com/collections/estates/products/peter-klein-chubby-unsmoked-dk-3)
     * [Norther Briars Cavalier](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-cavalier-99)
     * [Norther Briars Bulldog](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-long-shank-bulldog-46)
     * [Upshall P](https://www.pulverspriorbriar.com/english/upshall-p-101-9737)
