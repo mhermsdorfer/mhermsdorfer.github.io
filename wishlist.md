@@ -4,7 +4,6 @@
 * [Random Stuff](https://www.amazon.com/hz/wishlist/ls/Q2MC4K5X229B?ref_=wl_share)
 
 ## Non-Amazon Wishlist
-* [tom Bihn Co-Pilot Bag](https://www.tombihn.com/products/co-pilot?variant=44901684019389)  Ideally in 420 Spectron.
 * Lego
     * [Star Trek: U.S.S. Enterprise NCC-1701-D](https://www.lego.com/en-us/product/star-trek-u-s-s-enterprise-ncc-1701-d-10356)
     * [NASA SLS/Artemsis](https://www.lego.com/en-us/product/nasa-artemis-space-launch-system-10341)
