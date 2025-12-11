@@ -6,12 +6,15 @@
 ## Non-Amazon Wishlist
 * [tom Bihn Co-Pilot Bag](https://www.tombihn.com/products/co-pilot?variant=44901684019389)  Ideally in 420 Spectron.
 * Lego
+    * [Star Trek: U.S.S. Enterprise NCC-1701-D](https://www.lego.com/en-us/product/star-trek-u-s-s-enterprise-ncc-1701-d-10356)
     * [NASA SLS/Artemsis](https://www.lego.com/en-us/product/nasa-artemis-space-launch-system-10341)
-    * [NASA 737 Shuttle Carrier](https://www.lego.com/en-us/product/shuttle-carrier-aircraft-10360)
     * [NASA Apollo Rover](https://www.lego.com/en-us/product/nasa-apollo-lunar-roving-vehicle-lrv-42182)
     * [NASA Perseverance Rover](https://www.lego.com/en-us/product/nasa-mars-rover-perseverance-42158)
     * [Concorde](https://www.lego.com/en-us/product/concorde-10318)
 * Ham Radio
+    * [Tunner for Yeasu FTX-1 YSU-FC-80](https://www.dxengineering.com/parts/ysu-fc-80)
+    * [Cage for Yeasu FTX-1 YSU-SPG-1](https://www.dxengineering.com/parts/ysu-spg-1)
+    * [Fan for Yeasu FTX-1 YSU-SCF-1](https://www.dxengineering.com/parts/ysu-scf-1)
     * [FlexRadio Maestro](https://www.flexradio.com/products/maestro-control-console-flex-6000/)
     * [FlexRadio Tuner Genius XL S02R](https://www.flexradio.com/products/tuner-genius-xl/?sku=TGXL-SO)
     * [10Mhz Frequency Standard](https://www.zachtek.com/product-page/10mhz-frequency-standard)
