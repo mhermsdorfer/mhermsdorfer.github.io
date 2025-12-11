@@ -26,7 +26,6 @@
     * [Grand Seiko SBGY035](https://www.grand-seiko.com/us-en/collections/sbgy035g)
 * Pipes
     * [Piersel Billiard](https://www.mbsdpipes.com/product/scottie-piersel-natural-sandblasted-pencil-shank-billiard-estate-briar-pipe-unsmoked/)
-    * [Dunhill 848 ODA](https://www.mbsdpipes.com/product/dunhill-2001-shell-briar-oda-848-large-dublin-estate-briar-pipe-english-estates/)
     * [Tom Eltang Rusticated Poker](https://www.smokingpipes.com/pipes/new/eltang/moreinfo.cfm?product_id=634198)
     * [Northern Briars Bent Bulldog Spigot](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-spigot-bent-bulldog-98)
     * [Norther Briars Cavalier](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-cavalier-99)
