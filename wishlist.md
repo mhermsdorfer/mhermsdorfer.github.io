@@ -6,13 +6,10 @@
 ## Non-Amazon Wishlist
 * Lego
     * [Star Trek: U.S.S. Enterprise NCC-1701-D](https://www.lego.com/en-us/product/star-trek-u-s-s-enterprise-ncc-1701-d-10356)
-    * [NASA SLS/Artemsis](https://www.lego.com/en-us/product/nasa-artemis-space-launch-system-10341)
     * [NASA Apollo Rover](https://www.lego.com/en-us/product/nasa-apollo-lunar-roving-vehicle-lrv-42182)
-    * [NASA Perseverance Rover](https://www.lego.com/en-us/product/nasa-mars-rover-perseverance-42158)
+    * [DC-3] (https://www.lego.com/en-us/product/douglas-dc-3-pan-am-airliner-11378)
     * [Concorde](https://www.lego.com/en-us/product/concorde-10318)
 * Ham Radio
-    * [Tunner for Yeasu FTX-1 YSU-FC-80](https://www.dxengineering.com/parts/ysu-fc-80)
-    * [Cage for Yeasu FTX-1 YSU-SPG-1](https://www.dxengineering.com/parts/ysu-spg-1)
     * [Fan for Yeasu FTX-1 YSU-SCF-1](https://www.dxengineering.com/parts/ysu-scf-1)
     * [FlexRadio Maestro](https://www.flexradio.com/products/maestro-control-console-flex-6000/)
     * [FlexRadio Tuner Genius XL S02R](https://www.flexradio.com/products/tuner-genius-xl/?sku=TGXL-SO)
