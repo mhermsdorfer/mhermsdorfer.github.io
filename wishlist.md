@@ -9,6 +9,8 @@
     * [NASA Apollo Rover](https://www.lego.com/en-us/product/nasa-apollo-lunar-roving-vehicle-lrv-42182)
     * [Douglas DC-3](https://www.lego.com/en-us/product/douglas-dc-3-pan-am-airliner-11378)
     * [Concorde](https://www.lego.com/en-us/product/concorde-10318)
+* 3D Printing
+    * [BambuLab P2S Combo w/AMS](https://us.store.bambulab.com/products/p2s?from=home_web_p2s_detail&id=664977091405410311)
 * Ham Radio
     * [Fan for Yeasu FTX-1 YSU-SCF-1](https://www.dxengineering.com/parts/ysu-scf-1)
     * [FlexRadio Maestro](https://www.flexradio.com/products/maestro-control-console-flex-6000/)
