@@ -7,12 +7,17 @@
 * Lego
     * [Star Trek: U.S.S. Enterprise NCC-1701-D](https://www.lego.com/en-us/product/star-trek-u-s-s-enterprise-ncc-1701-d-10356)
     * [NASA Apollo Rover](https://www.lego.com/en-us/product/nasa-apollo-lunar-roving-vehicle-lrv-42182)
-    * [DC-3] (https://www.lego.com/en-us/product/douglas-dc-3-pan-am-airliner-11378)
+    * [Douglas DC-3](https://www.lego.com/en-us/product/douglas-dc-3-pan-am-airliner-11378)
     * [Concorde](https://www.lego.com/en-us/product/concorde-10318)
 * Ham Radio
     * [Fan for Yeasu FTX-1 YSU-SCF-1](https://www.dxengineering.com/parts/ysu-scf-1)
     * [FlexRadio Maestro](https://www.flexradio.com/products/maestro-control-console-flex-6000/)
     * [FlexRadio Tuner Genius XL S02R](https://www.flexradio.com/products/tuner-genius-xl/?sku=TGXL-SO)
+    * [CHA Hybrid Mini w/60' wire](https://chameleonantenna.com/products/cha-hybrid-mini?variant=46504626127094)
+    * [CHA LEFS 4010 w/CHA-LINK-D15](https://chameleonantenna.com/products/cha-lefs-4010-lightweight-end-fed-sloper-efhw?variant=48548549918966)
+    * [1:1 Low Power Balun](https://www.dxengineering.com/parts/dxe-twig-1-1)
+    * [4:1 Low Power Balun](https://www.dxengineering.com/parts/dxe-twig-4-1c)
+    * [9:1 Low Power Balun](https://www.dxengineering.com/parts/dxe-twig-9-1)
     * [10Mhz Frequency Standard](https://www.zachtek.com/product-page/10mhz-frequency-standard)
 * Watches
     * [Omega Speedmaster Professional Moonwatch](https://www.omegawatches.com/en-us/watch-omega-speedmaster-moonwatch-professional-co-axial-master-chronometer-chronograph-42-mm-31030425001001)
