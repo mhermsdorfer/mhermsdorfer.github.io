@@ -21,6 +21,21 @@
     * [4:1 Low Power Balun](https://www.dxengineering.com/parts/dxe-twig-4-1c)
     * [9:1 Low Power Balun](https://www.dxengineering.com/parts/dxe-twig-9-1)
     * [10Mhz Frequency Standard](https://www.zachtek.com/product-page/10mhz-frequency-standard)
+* Photography
+    * [Super Macro Lens for Canon](https://www.bhphotovideo.com/c/product/1307519-REG/mitakon_zhongyi_mtk20mf2ef_20mm_f_2_4_5x_super.html)
+    * [Cannon 200-800mm Lens](https://www.bhphotovideo.com/a/new/1793388/canon_rf_200_800mm_f_6_3_9_is.html)
+* Pipes
+    * These change too often to keep this updated.  Instead this is a list of repuitable sites to buy pipes, and various makers/shapes I enjoy.
+    * Sites
+        * [Smoking Pipes](https://www.smokingpipes.com/)
+        * [Pulvers Prior Briar](https://www.pulverspriorbriar.com/)
+        * [Pipes2Smoke](https://pipes2smoke.com/)
+        * [MBSD Pipes](https://www.mbsdpipes.com/)
+    * Makers
+        * Scottie Piersel -- Particularly a straight billiard of hers
+        * Tom Eltang -- Particularly a Rusticated Poker.
+        * Northern Briars (Ian Walker) -- Many of his classic english shapes, often with silver.
+        * Ferndown (Les wood) -- Virtually anything he put out I enjoy.
 * Watches
     * [Omega Speedmaster Professional Moonwatch](https://www.omegawatches.com/en-us/watch-omega-speedmaster-moonwatch-professional-co-axial-master-chronometer-chronograph-42-mm-31030425001001)
     * [Sinn 903 Watch](https://www.watchbuys.com/store/pc/Sinn-903-Column-Wheel-St-BE-II-on-Strap-176p7751.htm)
@@ -28,10 +43,4 @@
     * [Grand Seiko SBGY011](https://www.grand-seiko.com/us-en/collections/sbgy011g)
     * [Grand Seiko SBGY007](https://www.grand-seiko.com/us-en/collections/sbgy007g)
     * [Grand Seiko SBGY035](https://www.grand-seiko.com/us-en/collections/sbgy035g)
-* Pipes
-    * [Piersel Billiard](https://www.mbsdpipes.com/product/scottie-piersel-natural-sandblasted-pencil-shank-billiard-estate-briar-pipe-unsmoked/)
-    * [Tom Eltang Rusticated Poker](https://www.smokingpipes.com/pipes/new/eltang/moreinfo.cfm?product_id=634198)
-    * [Northern Briars Bent Bulldog Spigot](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-spigot-bent-bulldog-98)
-    * [Norther Briars Cavalier](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-cavalier-99)
-    * [Norther Briars Bulldog](https://pipes2smoke.com/collections/northern-briars/products/northern-briars-long-shank-bulldog-46)
-    * [Upshall P](https://www.pulverspriorbriar.com/english/upshall-p-101-9737)
+
