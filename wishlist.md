@@ -1,12 +1,10 @@
 # Wishlist
 
 ## Amazon Wishlists
-* [Random Stuff](https://www.amazon.com/hz/wishlist/ls/Q2MC4K5X229B?ref_=wl_share)
+* [Random Stuff](https://www.amazon.com/hz/wishlist/ls/Q2MC4K5X229B)
 
 ## Non-Amazon Wishlist
 * Lego
-    * [Star Trek: U.S.S. Enterprise NCC-1701-D](https://www.lego.com/en-us/product/star-trek-u-s-s-enterprise-ncc-1701-d-10356)
-    * [NASA Apollo Rover](https://www.lego.com/en-us/product/nasa-apollo-lunar-roving-vehicle-lrv-42182)
     * [Douglas DC-3](https://www.lego.com/en-us/product/douglas-dc-3-pan-am-airliner-11378)
     * [Concorde](https://www.lego.com/en-us/product/concorde-10318)
 * 3D Printing
@@ -25,7 +23,7 @@
     * [Super Macro Lens for Canon](https://www.bhphotovideo.com/c/product/1307519-REG/mitakon_zhongyi_mtk20mf2ef_20mm_f_2_4_5x_super.html)
     * [Cannon 200-800mm Lens](https://www.bhphotovideo.com/a/new/1793388/canon_rf_200_800mm_f_6_3_9_is.html)
 * Pipes
-    * These change too often to keep this updated.  Instead this is a list of repuitable sites to buy pipes, and various makers/shapes I enjoy.
+    * These change too often to keep this updated.  Instead this is a list of reputable sites to buy pipes, and various makers/shapes I enjoy.
     * Sites
         * [Smoking Pipes](https://www.smokingpipes.com/)
         * [Pulvers Prior Briar](https://www.pulverspriorbriar.com/)
@@ -37,6 +35,7 @@
         * Northern Briars (Ian Walker) -- Many of his classic english shapes, often with silver.
         * Ferndown (Les wood) -- Virtually anything he put out I enjoy.
 * Watches
+    * Yes, this list is nuts, but if you're feeling extra insanely generous.
     * [Omega Speedmaster Professional Moonwatch](https://www.omegawatches.com/en-us/watch-omega-speedmaster-moonwatch-professional-co-axial-master-chronometer-chronograph-42-mm-31030425001001)
     * [Sinn 903 Watch](https://www.watchbuys.com/store/pc/Sinn-903-Column-Wheel-St-BE-II-on-Strap-176p7751.htm)
     * [Sinn 103 Watch](https://www.watchbuys.com/store/pc/Sinn-103-Column-Wheel-St-DIAPAL-on-Strap-103p1415.htm)
